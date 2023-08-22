@@ -1,0 +1,27 @@
+# Dependency directory
+/node_modules
+
+# compiler file
+/dist
+*.js
+*.map
+*.d.ts
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# env
+.env
+.env.local
+.env.development
+.env.production
+
+# logs
+logs
+*.log
+.DS_Store
