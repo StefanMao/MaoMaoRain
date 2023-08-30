@@ -102,4 +102,22 @@ export class FacebookSDK {
       );
     });
   }
+
+  public logout(): Promise<FacebookLoginStatus> {
+    return new Promise((resolve) => {
+      window.FB.logout((response: FacebookLoginStatus) => {
+        console.log('handleFBLogout', response);
+        resolve(response);
+      })
+    })
+  }
+
+  public me(): Promise<any> {
+    return new Promise((resolve) => {
+      window.FB.api('/me/', 'GET', { fields: 'id,name,email,accounts{name,instagram_business_account}' }, (response: any) => {
+        console.log('me', response);
+        resolve(response);
+      });
+    })
+  }
 }
