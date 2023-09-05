@@ -119,7 +119,7 @@ export class FacebookSDK {
         'GET',
         { fields: 'id,name,email,accounts{name,instagram_business_account}' },
         (response: any) => {
-          console.log('me', response);
+          console.log('window.FB.api / me', response);
           resolve(response);
         },
       );
