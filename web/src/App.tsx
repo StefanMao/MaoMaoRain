@@ -1,7 +1,7 @@
 // React、第三方套件、其他相關 import
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { FacebookSDK } from './utils/faceBookSdk';
+import { FacebookSDK } from './utils/facebook/faceBookSdk';
 
 // Material-UI 相關 import
 import { Container } from '@mui/material';
@@ -11,9 +11,9 @@ import './App.css';
 import { containerStyle, appStyle } from './AppStyle';
 
 // 專案內部頁面和組件 相關 import
-import HomePage from './pages/HomePage/HomePage';
-import IgLotteryPage from './pages/IgLotteryPage/IgLotteryPage';
-import NavBar from './components/App/NavBar/NavBar';
+import HomePage from './pages/home-page/HomePage';
+import IgLotteryPage from './pages/ig-lottery-page/IgLotteryPage';
+import NavBar from './components/app/nav-bar/NavBar';
 
 const App: React.FC = () => {
   useEffect(() => {

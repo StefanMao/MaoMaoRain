@@ -1,16 +1,4 @@
-type FacebookAuthResponse = {
-  accessToken: string;
-  userID: string;
-  expiresIn: number;
-  signedRequest: string;
-  graphDomain: string;
-  data_access_expiration_time: number;
-};
-
-type FacebookLoginStatus = {
-  authResponse: FacebookAuthResponse | null;
-  status: 'connected' | 'not_authorized' | 'unknown';
-};
+import { FacebookLoginStatus } from './faceBookSdkTypes';
 
 export class FacebookSDK {
   private static instance: FacebookSDK | null = null;
