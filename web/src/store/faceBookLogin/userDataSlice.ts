@@ -9,7 +9,7 @@ const initialState: FbUserDataState = {
   userID: '',
   name: '',
   email: '',
-  accounts: {},
+  accounts: { data: [] },
 };
 
 export const userSlice = createSlice({
@@ -17,15 +17,20 @@ export const userSlice = createSlice({
   initialState: initialState,
   reducers: {
     saveUserData: (state, action: PayloadAction<FbUserDataState>) => {
-      console.log('saveUserData', action.payload);
       return {
         ...state,
         ...action.payload,
       };
     },
+    resetUserData: (state) => {
+      return {
+        ...state,
+        ...initialState,
+      };
+    },
   },
 });
 
-export const { saveUserData } = userSlice.actions;
+export const { saveUserData, resetUserData } = userSlice.actions;
 
 export default userSlice.reducer;

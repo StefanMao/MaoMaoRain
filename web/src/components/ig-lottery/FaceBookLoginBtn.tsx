@@ -1,12 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
 
 import Button from '@mui/material/Button';
 import FacebookOutlineIcon from '@mui/icons-material/FacebookOutlined';
 
 import { saveUserData } from '../../store/faceBookLogin/userDataSlice';
-import { selectUserData } from '../../store/faceBookLogin/selectors';
 import { FacebookLoginStatus, MeApiResponse } from '../../utils/facebook/faceBookSdkTypes';
 import { FacebookSDK } from '../../utils/facebook/faceBookSdk';
 
@@ -17,8 +16,6 @@ interface FaceBookActions {
 
 export const useHook = (): [FaceBookActions] => {
   const dispatch = useDispatch();
-  const userData = useSelector(selectUserData);
-  console.log('useSelector', userData);
 
   const handleFbLoginClick = async () => {
     try {
@@ -61,9 +58,10 @@ const FaceBookLoginBtn: React.FC = () => {
     <Button
       startIcon={<FacebookOutlineIcon />}
       variant='contained'
+      sx={{ maxWidth: '300px' }}
       onClick={actions.handleFbLoginClick}
     >
-      使用 FaceBook 帳號登入
+      FaceBook 登入
     </Button>
   );
 };

@@ -1,3 +1,16 @@
+export type FaceBookFanAccount = {
+  name: string;
+  instagram_business_account?: {
+    id: string;
+  };
+  id: string;
+};
+
+export type FacebookFanAccountsData = {
+  data: FaceBookFanAccount[];
+  paging?: object;
+}
+
 export type FacebookAuthResponse = {
   accessToken: string;
   userID: string;
@@ -16,5 +29,6 @@ export type MeApiResponse = {
   id?: string;
   name?: string;
   email?: string;
-  accounts?: object;
+  accounts: FacebookFanAccountsData;
 };
+
