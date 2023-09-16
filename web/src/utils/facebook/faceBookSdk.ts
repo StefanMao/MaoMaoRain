@@ -1,4 +1,5 @@
 import { FacebookLoginStatus } from './faceBookSdkTypes';
+import { FaceBookFanAccount, MeApiResponse } from './faceBookSdkTypes';
 
 export class FacebookSDK {
   private static instance: FacebookSDK | null = null;
@@ -52,6 +53,16 @@ export class FacebookSDK {
     }
   }
 
+  /**
+   * Filter Facebook fan accounts to include only those linked to Instagram.
+   *
+   * @param {FaceBookFanAccount[]} datas - An array of Facebook fan accounts to filter.
+   * @returns {FaceBookFanAccount[]} An array of filtered Facebook fan accounts with Instagram links.
+   */
+  private filterIgAccounts(datas: FaceBookFanAccount[]): FaceBookFanAccount[] {
+    return datas.filter((account: FaceBookFanAccount) => account.instagram_business_account);
+  }
+
   public static async getInstance(): Promise<FacebookSDK> {
     if (!FacebookSDK.instance) {
       const sdk = new FacebookSDK();
@@ -86,7 +97,7 @@ export class FacebookSDK {
           console.log('Login response', response);
           resolve(response);
         },
-        { scope: 'public_profile,email' },
+        { scope: 'public_profile,email,pages_show_list,instagram_basic,business_management' },
       );
     });
   }
@@ -106,7 +117,11 @@ export class FacebookSDK {
         '/me/',
         'GET',
         { fields: 'id,name,email,accounts{name,instagram_business_account}' },
-        (response: any) => {
+        (response: MeApiResponse) => {
+          console.log('response', response);
+          if (response.accounts) {
+            response.accounts.data = this.filterIgAccounts(response.accounts.data);
+          }
           console.log('window.FB.api / me', response);
           resolve(response);
         },

@@ -22,6 +22,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import FaceBookLoginBtn from '../../components/ig-lottery/FaceBookLoginBtn';
 import FaceBookUserInfo from '../../components/ig-lottery/FaceBookUserInfo';
 import IgAccountContent from '../../components/ig-lottery/IgAccountContent';
+import IgAccountVerifyBtn from '../../components/ig-lottery/IgAccountVerifyBtn';
 
 import { saveUserData, resetUserData } from '../../store/faceBookLogin/userDataSlice';
 import {
@@ -33,8 +34,6 @@ import { selectUserData } from '../../store/faceBookLogin/selectors';
 import { FacebookSDK } from '../../utils/facebook/faceBookSdk';
 
 interface UserDataActions {
-  isFacebookLoggedIn: () => boolean;
-  isFacebookUserDataEmpty: () => boolean;
   saveLoggedInDataToStore: () => Promise<void>;
   facebookLogoutBtnClick: () => Promise<void>;
   clearUserData: () => void;
@@ -42,27 +41,32 @@ interface UserDataActions {
 
 interface UserDataState extends FacebookAuthResponse, MeApiResponse {}
 
-interface IgLotteryPageActions  extends UserDataActions {
+interface IgLotteryPageActions extends UserDataActions {
   renderFacebookStatusIcon: (isEmpty: boolean) => React.ReactNode;
-} 
+}
 interface IgLotteryPageStates {
   userFbLoggInData: UserDataState;
+  isUserIgAccountsDataEmpty: boolean;
+  isFacebookLoggedIn: boolean;
+  isFacebookUserDataEmpty: boolean;
 }
 
 export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
   const dispatch = useDispatch();
   const userFbLoggInData: UserDataState = useSelector(selectUserData);
+  const isUserIgAccountsDataEmpty: boolean =
+    !userFbLoggInData?.accounts || userFbLoggInData?.accounts.data.length === 0;
 
-  const isFacebookLoggedIn = (): boolean => !!Cookies.get('FacebookAccessToken');
+  const isFacebookLoggedIn: boolean = !!Cookies.get('FacebookAccessToken');
 
-  const isFacebookUserDataEmpty = (): boolean => userFbLoggInData.userID === '';
+  const isFacebookUserDataEmpty: boolean = userFbLoggInData.userID === '';
 
   const renderFacebookStatusIcon = (isEmpty: boolean) => {
     return isEmpty ? <LinkOffIcon sx={{ color: 'red' }} /> : <LinkIcon sx={{ color: 'green' }} />;
   };
 
   const saveLoggedInDataToStore = async (): Promise<void> => {
-    if (isFacebookLoggedIn() && userFbLoggInData.accessToken === '') {
+    if (isFacebookLoggedIn && userFbLoggInData.accessToken === '') {
       try {
         const fbSdkInstance = await FacebookSDK.getInstance();
         const response: FacebookLoginStatus = await fbSdkInstance.getLoginStatus();
@@ -101,11 +105,14 @@ export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
     saveLoggedInDataToStore();
   }, []);
 
-  const states: IgLotteryPageStates = { userFbLoggInData };
-  const actions: IgLotteryPageActions = {
+  const states: IgLotteryPageStates = {
+    userFbLoggInData,
+    isUserIgAccountsDataEmpty,
     isFacebookLoggedIn,
-    saveLoggedInDataToStore,
     isFacebookUserDataEmpty,
+  };
+  const actions: IgLotteryPageActions = {
+    saveLoggedInDataToStore,
     facebookLogoutBtnClick,
     clearUserData,
     renderFacebookStatusIcon,
@@ -116,8 +123,8 @@ export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
 
 const IgLotteryPage: React.FC = () => {
   const [states, actions] = useHook();
-  const { userFbLoggInData } = states;
-  const { isFacebookUserDataEmpty, facebookLogoutBtnClick, renderFacebookStatusIcon } = actions;
+  const { userFbLoggInData, isFacebookUserDataEmpty, isUserIgAccountsDataEmpty } = states;
+  const { facebookLogoutBtnClick, renderFacebookStatusIcon } = actions;
 
   // console.log('userFbLoggInData', userFbLoggInData);
   return (
@@ -139,11 +146,11 @@ const IgLotteryPage: React.FC = () => {
           sx={{ margin: '12px 0px 12px 0px' }}
           spacing={2}
         >
-          {renderFacebookStatusIcon(isFacebookUserDataEmpty())}
+          {renderFacebookStatusIcon(isFacebookUserDataEmpty)}
           <Typography variant='h5' sx={{ textAlign: 'left' }}>
             FaceBook帳號
           </Typography>
-          {isFacebookUserDataEmpty() ? (
+          {isFacebookUserDataEmpty ? (
             <Typography variant='body2' sx={{ textAlign: 'left' }}>
               您尚未連結任何FaceBook帳號資訊，請點擊按鈕進行帳號綁定。
             </Typography>
@@ -153,7 +160,6 @@ const IgLotteryPage: React.FC = () => {
                 您已經成功連結Facebook帳號，若要移除連結，請點擊登出按鈕
                 <Button
                   variant='outlined'
-                  size='small'
                   startIcon={<LogoutIcon />}
                   sx={{ marginLeft: '8px' }}
                   onClick={() => facebookLogoutBtnClick()}
@@ -164,7 +170,7 @@ const IgLotteryPage: React.FC = () => {
             </Grid>
           )}
         </Stack>
-        {isFacebookUserDataEmpty() ? (
+        {isFacebookUserDataEmpty ? (
           <Stack alignItems='center'>
             <FaceBookLoginBtn />
           </Stack>
@@ -174,26 +180,24 @@ const IgLotteryPage: React.FC = () => {
           </Stack>
         )}
       </Grid>
-      {!isFacebookUserDataEmpty() && (
+      {!isFacebookUserDataEmpty && (
         <Box mt={4}>
           <Stack direction='row' justifyContent='start' alignItems='center' spacing={2}>
-            {renderFacebookStatusIcon(userFbLoggInData?.accounts.data.length === 0)}
-            <Typography variant='h5'>
-              Instagram 帳號設定
-            </Typography>
-            {userFbLoggInData?.accounts.data.length === 0 && (
+            {renderFacebookStatusIcon(userFbLoggInData?.accounts?.data.length === 0)}
+            <Typography variant='h5'>Instagram 帳號設定</Typography>
+            {isUserIgAccountsDataEmpty && (
               <Chip
                 variant='outlined'
                 color='error'
                 icon={<InfoIcon />}
-                label='未取得粉絲專頁資訊，請檢查是否授權。'
-                sx={{ marginLeft: '4px'}}
+                label='未取得任何一個Ig粉絲專頁授權，請點擊「編輯權限」按鈕確認授權。'
+                sx={{ marginLeft: '4px' }}
                 size='small'
               />
             )}
+            <IgAccountVerifyBtn />
           </Stack>
-          <IgAccountContent accounts={userFbLoggInData.accounts} />
-          {/* <IgAccountContent accounts={{ data: [] }} /> */}
+          {!isUserIgAccountsDataEmpty && <IgAccountContent accounts={userFbLoggInData.accounts} />}
         </Box>
       )}
     </Container>

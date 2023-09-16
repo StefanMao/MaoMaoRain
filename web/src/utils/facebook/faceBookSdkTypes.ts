@@ -29,6 +29,6 @@ export type MeApiResponse = {
   id?: string;
   name?: string;
   email?: string;
-  accounts: FacebookFanAccountsData;
+  accounts?: FacebookFanAccountsData;
 };
 

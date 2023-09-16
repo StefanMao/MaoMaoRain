@@ -9,7 +9,7 @@ interface FaceBookUserInfoProps {
     email?: string;
     account?: string;
     name?: string;
-    userId?: string;
+    userID?: string;
   };
 }
 
@@ -35,7 +35,7 @@ const FaceBookUserInfo: React.FC<FaceBookUserInfoProps> = ({ userData }) => {
       <Typography
         sx={UserInfoTypographyStyle}
       >
-        使用者ID: {userData.userId}
+        使用者ID: {userData.userID}
       </Typography>
       <Typography
         sx={UserInfoTypographyStyle}

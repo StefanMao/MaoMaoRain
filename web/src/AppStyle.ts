@@ -5,6 +5,5 @@ export const appStyle: CSSProperties = {
 };
 
 export const containerStyle: CSSProperties = {
-  border: '1px solid red',
   marginTop: '20px',
 };

@@ -6,7 +6,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import { FaceBookFanAccount, FacebookFanAccountsData } from '../../utils/facebook/faceBookSdkTypes';
 
 interface IgAccountContentProps {
-  accounts: FacebookFanAccountsData;
+  accounts?: FacebookFanAccountsData;
 }
 
 interface IgAccountContentActions {
@@ -29,8 +29,7 @@ export const useHook = (props: IgAccountContentProps): [IgAccountContentStates, 
   };
 
   const initSelectAccountDefault = (): void => {
-    console.log('initSelectAccountDefault', accounts.data);
-    if (accounts.data.length > 0) {
+    if (accounts && accounts.data.length > 0) {
       setSelectedIgAccount(accounts.data[0]);
       setIsSelectDisabled(false);
     } else {
@@ -78,7 +77,7 @@ const IgAccountContent: React.FC<IgAccountContentProps> = (props) => {
             placeholder='請選擇粉絲專頁'
             disabled={isSelectDisabled}
           >
-            {accounts.data.map((account) => (
+            {accounts?.data.map((account) => (
               <MenuItem key={account.id} value={account as any}>
                 {account.name}
               </MenuItem>
