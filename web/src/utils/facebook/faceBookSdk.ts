@@ -1,6 +1,8 @@
 import { FacebookLoginStatus } from './faceBookSdkTypes';
 import { FaceBookFanAccount, MeApiResponse } from './faceBookSdkTypes';
 
+import { IInstagramMediaApi } from '../../utils/Instagram/instagramInterface';
+
 export class FacebookSDK {
   private static instance: FacebookSDK | null = null;
 
@@ -118,11 +120,24 @@ export class FacebookSDK {
         'GET',
         { fields: 'id,name,email,accounts{name,instagram_business_account}' },
         (response: MeApiResponse) => {
-          console.log('response', response);
           if (response.accounts) {
             response.accounts.data = this.filterIgAccounts(response.accounts.data);
           }
           console.log('window.FB.api / me', response);
+          resolve(response);
+        },
+      );
+    });
+  }
+
+  public getMediaPosts(businessAccountId: string): Promise<IInstagramMediaApi> {
+    return new Promise((resolve) => {
+      window.FB.api(
+        `${process.env.REACT_APP_FB_APP_VERSION}/${businessAccountId}/media`,
+        'GET',
+        { fields: 'media_type,media_url,comments{id,text,username},caption,timestamp' },
+        (response: IInstagramMediaApi) => {
+          console.log('window.FB.api / media', response);
           resolve(response);
         },
       );

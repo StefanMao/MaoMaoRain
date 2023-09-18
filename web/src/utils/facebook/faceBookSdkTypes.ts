@@ -1,8 +1,8 @@
 export type FaceBookFanAccount = {
   name: string;
-  instagram_business_account?: {
+  instagram_business_account: {
     id: string;
-  };
+  } | undefined;
   id: string;
 };
 
