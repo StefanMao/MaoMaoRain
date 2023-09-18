@@ -14,15 +14,18 @@ import {
   Button,
   Chip,
 } from '@mui/material';
+
 import InfoIcon from '@mui/icons-material/Info';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 import LinkIcon from '@mui/icons-material/Link';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 
 import FaceBookLoginBtn from '../../components/ig-lottery/FaceBookLoginBtn';
 import FaceBookUserInfo from '../../components/ig-lottery/FaceBookUserInfo';
 import IgAccountContent from '../../components/ig-lottery/IgAccountContent';
 import IgAccountVerifyBtn from '../../components/ig-lottery/IgAccountVerifyBtn';
+import IgPostSelectComponent from '../../components/ig-lottery/IgPostSelectComponent';
 
 import { saveUserData, resetUserData } from '../../store/faceBookLogin/userDataSlice';
 import {
@@ -126,7 +129,6 @@ const IgLotteryPage: React.FC = () => {
   const { userFbLoggInData, isFacebookUserDataEmpty, isUserIgAccountsDataEmpty } = states;
   const { facebookLogoutBtnClick, renderFacebookStatusIcon } = actions;
 
-  // console.log('userFbLoggInData', userFbLoggInData);
   return (
     <Container>
       <h1>Instagram抽獎工具</h1>
@@ -200,6 +202,15 @@ const IgLotteryPage: React.FC = () => {
           {!isUserIgAccountsDataEmpty && <IgAccountContent accounts={userFbLoggInData.accounts} />}
         </Box>
       )}
+      <Box mt={4}>
+        <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
+          <PhotoLibraryIcon color='primary' />
+          <Typography variant='h5' sx={{ textAlign: 'left' }}>
+            Instagram 貼文選擇
+          </Typography>
+        </Stack>
+        <IgPostSelectComponent />
+      </Box>
     </Container>
   );
 };

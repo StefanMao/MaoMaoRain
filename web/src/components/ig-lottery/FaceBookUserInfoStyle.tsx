@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-export const UserInfoTypographyStyle: CSSProperties = {
+export const userInfoTypographyStyle: CSSProperties = {
   textAlign: 'left',
   fontSize: '1.1rem',
   color: '#555',

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Box, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 import { FaceBookFanAccount, FacebookFanAccountsData } from '../../utils/facebook/faceBookSdkTypes';
+
+import { saveSelectBusinessAccount } from '../../store/InstagramStore/instagramSlice';
 
 interface IgAccountContentProps {
   accounts?: FacebookFanAccountsData;
@@ -19,22 +22,28 @@ interface IgAccountContentStates {
 }
 
 export const useHook = (props: IgAccountContentProps): [IgAccountContentStates, IgAccountContentActions] => {
+  const dispatch = useDispatch();
   const { accounts } = props;
   const [selectedIgAccount, setSelectedIgAccount] = useState<FaceBookFanAccount | null>(null);
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
 
+
   const handleFanPageChange = (event: SelectChangeEvent<FaceBookFanAccount | null>) => {
     const selectedAccount = event.target.value as FaceBookFanAccount;
     setSelectedIgAccount(selectedAccount);
+    dispatch(saveSelectBusinessAccount(selectedAccount));
   };
 
   const initSelectAccountDefault = (): void => {
     if (accounts && accounts.data.length > 0) {
-      setSelectedIgAccount(accounts.data[0]);
+      const defaultData = accounts.data[0];
+      setSelectedIgAccount(defaultData);
+      dispatch(saveSelectBusinessAccount(defaultData));
       setIsSelectDisabled(false);
     } else {
       setSelectedIgAccount(null);
       setIsSelectDisabled(true);
+      dispatch(saveSelectBusinessAccount(null));
     }
   };
 

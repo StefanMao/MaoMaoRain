@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Paper, Typography } from '@mui/material';
 
-import {UserInfoTypographyStyle} from './FaceBookUserInfoStyle';
+import { userInfoTypographyStyle } from './FaceBookUserInfoStyle';
 
 interface FaceBookUserInfoProps {
   userData?: {
@@ -27,21 +27,9 @@ const FaceBookUserInfo: React.FC<FaceBookUserInfoProps> = ({ userData }) => {
       >
         FB帳號連結資訊
       </Typography>
-      <Typography
-        sx={UserInfoTypographyStyle}
-      >
-        名稱: {userData.name}
-      </Typography>
-      <Typography
-        sx={UserInfoTypographyStyle}
-      >
-        使用者ID: {userData.userID}
-      </Typography>
-      <Typography
-        sx={UserInfoTypographyStyle}
-      >
-        Email: {userData.email}
-      </Typography>
+      <Typography sx={userInfoTypographyStyle}>名稱: {userData.name}</Typography>
+      <Typography sx={userInfoTypographyStyle}>使用者ID: {userData.userID}</Typography>
+      <Typography sx={userInfoTypographyStyle}>Email: {userData.email}</Typography>
     </Paper>
   );
 };
