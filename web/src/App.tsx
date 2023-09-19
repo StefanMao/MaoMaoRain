@@ -14,6 +14,7 @@ import { containerStyle, appStyle } from './AppStyle';
 import HomePage from './pages/home-page/HomePage';
 import IgLotteryPage from './pages/ig-lottery-page/IgLotteryPage';
 import NavBar from './components/app/nav-bar/NavBar';
+import Footer from './components/app/footer/Footer';
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -33,6 +34,7 @@ const App: React.FC = () => {
             <Route path='/ig-lottery' element={<IgLotteryPage />} />
           </Routes>
         </Container>
+        <Footer />
       </BrowserRouter>
     </div>
   );
