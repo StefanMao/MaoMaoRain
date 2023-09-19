@@ -27,6 +27,7 @@ import FaceBookUserInfo from '../../components/ig-lottery/FaceBookUserInfo';
 import IgAccountContent from '../../components/ig-lottery/IgAccountContent';
 import IgAccountVerifyBtn from '../../components/ig-lottery/IgAccountVerifyBtn';
 import IgPostSelectComponent from '../../components/ig-lottery/IgPostSelectComponent';
+import IgPostCommentTable from '../../components/ig-lottery/IgPostCommentTable/IgPostCommentTable';
 
 import { saveUserData, resetUserData } from '../../store/faceBookLogin/userDataSlice';
 import {
@@ -222,6 +223,7 @@ const IgLotteryPage: React.FC = () => {
               貼文留言資訊
             </Typography>
           </Stack>
+          <IgPostCommentTable />
         </Box>
       )}
     </Container>

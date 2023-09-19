@@ -1,7 +1,7 @@
 import { FacebookLoginStatus } from './faceBookSdkTypes';
 import { FaceBookFanAccount, MeApiResponse } from './faceBookSdkTypes';
 
-import { IInstagramMediaApi } from '../../utils/Instagram/instagramInterface';
+import { IInstagramMediaApi, IInstagramComment } from '../../utils/Instagram/instagramInterface';
 
 export class FacebookSDK {
   private static instance: FacebookSDK | null = null;
@@ -138,6 +138,23 @@ export class FacebookSDK {
         { fields: 'media_type,media_url,comments{id,text,username},caption,timestamp,shortcode' },
         (response: IInstagramMediaApi) => {
           console.log('window.FB.api / media', response);
+          resolve(response);
+        },
+      );
+    });
+  }
+
+  public getPostComments(postId: string): Promise<IInstagramComment[]> {
+    return new Promise((resolve) => {
+      window.FB.api(
+        `${process.env.REACT_APP_FB_APP_VERSION}/${postId}/`,
+        'GET',
+        {
+          fields:
+            'caption,comments{timestamp,user,id,text,like_count,parent_id,from},timestamp,shortcode',
+        },
+        (response: IInstagramComment[]) => {
+          console.log('window.FB.api / Post', response);
           resolve(response);
         },
       );

@@ -4,7 +4,7 @@ export interface IIgUser {
   id: string;
   username: string;
 }
-export interface ICommentData {
+export interface IInstagramComment {
   id: string;
   text: string;
   username: string;
@@ -16,18 +16,13 @@ export interface ICommentData {
 export interface IInstagramStore {
   selectedBusinessAccount: FaceBookFanAccount | null;
   selectedPost: IInstagramPost | null;
-}
-
-export interface IInstagramComment {
-  id: string;
-  text: string;
-  username: string;
+  currentPostComments: IInstagramComment[] | [];
 }
 
 export interface IInstagramPost {
   media_type: string;
   media_url: string;
-  comments?: ICommentData[];
+  comments?: IInstagramComment[];
   caption: string;
   timestamp: string;
   id: string;
