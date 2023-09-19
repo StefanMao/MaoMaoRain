@@ -135,7 +135,7 @@ export class FacebookSDK {
       window.FB.api(
         `${process.env.REACT_APP_FB_APP_VERSION}/${businessAccountId}/media`,
         'GET',
-        { fields: 'media_type,media_url,comments{id,text,username},caption,timestamp' },
+        { fields: 'media_type,media_url,comments{id,text,username},caption,timestamp,shortcode' },
         (response: IInstagramMediaApi) => {
           console.log('window.FB.api / media', response);
           resolve(response);

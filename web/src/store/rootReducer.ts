@@ -4,7 +4,7 @@ import instagramReducer from './InstagramStore/instagramSlice';
 
 const rootReducer = combineReducers({
   userData: userReducer,
-  instagramAccountData: instagramReducer,
+  instagramData: instagramReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

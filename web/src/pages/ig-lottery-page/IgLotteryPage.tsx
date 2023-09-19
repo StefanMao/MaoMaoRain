@@ -20,6 +20,7 @@ import LinkOffIcon from '@mui/icons-material/LinkOff';
 import LinkIcon from '@mui/icons-material/Link';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 import FaceBookLoginBtn from '../../components/ig-lottery/FaceBookLoginBtn';
 import FaceBookUserInfo from '../../components/ig-lottery/FaceBookUserInfo';
@@ -202,15 +203,27 @@ const IgLotteryPage: React.FC = () => {
           {!isUserIgAccountsDataEmpty && <IgAccountContent accounts={userFbLoggInData.accounts} />}
         </Box>
       )}
-      <Box mt={4}>
-        <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
-          <PhotoLibraryIcon color='primary' />
-          <Typography variant='h5' sx={{ textAlign: 'left' }}>
-            Instagram 貼文選擇
-          </Typography>
-        </Stack>
-        <IgPostSelectComponent />
-      </Box>
+      {!isUserIgAccountsDataEmpty && (
+        <Box mt={4}>
+          <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
+            <PhotoLibraryIcon color='primary' />
+            <Typography variant='h5' sx={{ textAlign: 'left' }}>
+              Instagram 貼文選擇
+            </Typography>
+          </Stack>
+          <IgPostSelectComponent />
+        </Box>
+      )}
+      {!isUserIgAccountsDataEmpty && (
+        <Box mt={4}>
+          <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
+            <AnalyticsIcon color='primary' />
+            <Typography variant='h5' sx={{ textAlign: 'left' }}>
+              貼文留言資訊
+            </Typography>
+          </Stack>
+        </Box>
+      )}
     </Container>
   );
 };

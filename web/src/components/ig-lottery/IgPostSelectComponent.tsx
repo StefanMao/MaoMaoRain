@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
   Select,
@@ -9,11 +9,13 @@ import {
   Typography,
   Chip,
   Divider,
+  IconButton,
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 import { IInstagramPost, IInstagramStore } from '../../utils/Instagram/instagramInterface';
-import { getSelectBusinessAccount } from '../../store/InstagramStore/selectors';
+import { instagramData } from '../../store/InstagramStore/selectors';
 
 import { FacebookSDK } from '../../utils/facebook/faceBookSdk';
 import { formatTimestamp } from '../../utils/moment/moment';
@@ -23,11 +25,13 @@ import {
   menuItemDividerStyle,
   BootstrapInput,
 } from './IgPostSelectComponentStyle';
+import { saveSelectedPost } from '../../store/InstagramStore/instagramSlice';
 
 interface IgPostSelectComponentActions {
   getIgPosts: () => Promise<void>;
   handleSelectPostChange: (event: SelectChangeEvent<IInstagramPost | null>) => void;
   initSelectPostDefault: () => void;
+  openIgPostUrl: () => void;
 }
 
 interface IgPostSelectComponentStates {
@@ -36,28 +40,32 @@ interface IgPostSelectComponentStates {
 }
 
 export const useHook = (): [IgPostSelectComponentStates, IgPostSelectComponentActions] => {
-  const { businessAccount }: IInstagramStore = useSelector(getSelectBusinessAccount);
-
+  const dispatch = useDispatch();
+  const { selectedBusinessAccount, selectedPost }: IInstagramStore = useSelector(instagramData);
   const [postDatas, setPostDatas] = useState<IInstagramPost[]>([]);
-  const [selectedPost, setSelectedPost] = useState<IInstagramPost | null>(null);
+
+  const openIgPostUrl = (): void => {
+    if (!selectedPost?.shortcode) return;
+    const url = `https://www.instagram.com/p/${selectedPost.shortcode}`;
+    window.open(url);
+  };
 
   const handleSelectPostChange = (event: SelectChangeEvent<IInstagramPost | null>): void => {
     const post = event.target.value as IInstagramPost;
-    console.log('handleSelectPostChange', post);
-    setSelectedPost(post);
+    dispatch(saveSelectedPost(post));
   };
 
   const initSelectPostDefault = () => {
     if (postDatas && postDatas.length > 0) {
       const defaultData = postDatas[0];
-      setSelectedPost(defaultData);
+      dispatch(saveSelectedPost(defaultData));
     } else {
-      setSelectedPost(null);
+      dispatch(saveSelectedPost(null));
     }
   };
 
   const getIgPosts = async (): Promise<void> => {
-    const instagramBusinessAccountId = businessAccount?.instagram_business_account?.id;
+    const instagramBusinessAccountId = selectedBusinessAccount?.instagram_business_account?.id;
     if (!instagramBusinessAccountId) return;
     const fbSdkInstance = await FacebookSDK.getInstance();
     const result = await fbSdkInstance.getMediaPosts(instagramBusinessAccountId);
@@ -69,12 +77,12 @@ export const useHook = (): [IgPostSelectComponentStates, IgPostSelectComponentAc
   }, [postDatas]);
 
   React.useEffect(() => {
-    console.log('businessAccount', businessAccount);
+    console.log('selectedBusinessAccount Change', selectedBusinessAccount);
     getIgPosts();
-  }, [businessAccount]);
+  }, [selectedBusinessAccount]);
 
   React.useEffect(() => {
-    console.log('selectedPost', selectedPost);
+    console.log('selectedPostStore change', selectedPost);
   }, [selectedPost]);
 
   const states: IgPostSelectComponentStates = { postDatas, selectedPost };
@@ -82,6 +90,7 @@ export const useHook = (): [IgPostSelectComponentStates, IgPostSelectComponentAc
     getIgPosts,
     handleSelectPostChange,
     initSelectPostDefault,
+    openIgPostUrl,
   };
   return [states, actions];
 };
@@ -89,16 +98,17 @@ export const useHook = (): [IgPostSelectComponentStates, IgPostSelectComponentAc
 const IgPostSelectComponent: React.FC = () => {
   const [states, actions] = useHook();
   const { postDatas, selectedPost } = states;
-  const { handleSelectPostChange } = actions;
+  const { handleSelectPostChange, openIgPostUrl } = actions;
 
   return (
     <Box>
-      <FormControl sx={{ m: 1, width: '100%' }}>
+      <FormControl sx={{ width: '100%' }}>
         <Select
           labelId='custom-select-label'
-          value={selectedPost}
+          value={selectedPost || ''}
           onChange={handleSelectPostChange}
           input={<BootstrapInput />}
+          MenuProps={{ PaperProps: { style: { maxHeight: '250px' } } }}
         >
           {postDatas.map((post) => (
             <MenuItem key={post.id} value={post as any}>
@@ -107,6 +117,9 @@ const IgPostSelectComponent: React.FC = () => {
                 {formatTimestamp(post.timestamp)}
               </Typography>
               <Divider style={menuItemDividerStyle} orientation='vertical' flexItem />
+              <IconButton color='primary' onClick={openIgPostUrl}>
+                <OpenInNewIcon />
+              </IconButton>
               <Typography style={menuItemPostContentStyle}>{post.caption}</Typography>
             </MenuItem>
           ))}

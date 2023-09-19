@@ -1,13 +1,21 @@
 import { FaceBookFanAccount } from '../../utils/facebook/faceBookSdkTypes';
 
+export interface IIgUser {
+  id: string;
+  username: string;
+}
 export interface ICommentData {
   id: string;
   text: string;
   username: string;
+  timestamp: string;
+  like_count: number;
+  from: IIgUser;
 }
 
 export interface IInstagramStore {
-  businessAccount: FaceBookFanAccount | null;
+  selectedBusinessAccount: FaceBookFanAccount | null;
+  selectedPost: IInstagramPost | null;
 }
 
 export interface IInstagramComment {
@@ -23,6 +31,7 @@ export interface IInstagramPost {
   caption: string;
   timestamp: string;
   id: string;
+  shortcode: string;
 }
 
 export interface IInstagramMediaApi {

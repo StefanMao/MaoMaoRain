@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { FaceBookFanAccount } from '../../utils/facebook/faceBookSdkTypes';
-import { IInstagramStore } from '../../utils/Instagram/instagramInterface';
+import { IInstagramStore, IInstagramPost } from '../../utils/Instagram/instagramInterface';
 
 const initialState: IInstagramStore = {
-  businessAccount: null,
+  selectedBusinessAccount: null,
+  selectedPost: null,
 };
 
 export const instagramSlice = createSlice({
@@ -12,11 +13,14 @@ export const instagramSlice = createSlice({
   initialState,
   reducers: {
     saveSelectBusinessAccount: (state, action: PayloadAction<FaceBookFanAccount | null>) => {
-      state.businessAccount = action.payload;
+      state.selectedBusinessAccount = action.payload;
     },
+    saveSelectedPost:(state, action: PayloadAction<IInstagramPost | null>) => {
+      state.selectedPost = action.payload;
+    }
   },
 });
 
-export const { saveSelectBusinessAccount } = instagramSlice.actions;
+export const { saveSelectBusinessAccount, saveSelectedPost } = instagramSlice.actions;
 
 export default instagramSlice.reducer;
