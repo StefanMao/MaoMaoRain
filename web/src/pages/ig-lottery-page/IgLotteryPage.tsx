@@ -136,11 +136,11 @@ const IgLotteryPage: React.FC = () => {
       <h1>Instagram抽獎工具</h1>
       <Alert severity='info' sx={{ textAlign: 'left' }}>
         <AlertTitle>關於Ig抽獎小工具:</AlertTitle>
-        歡迎使用Instagram抽獎工具，可以輕鬆讀取IG貼文留言，然後由系統隨機選出幸運得獎者。在使用之前，只需將您的Facebook粉絲專頁新增至您的Instagram帳號即可。
+        歡迎使用Social Pluse Hub Instagram抽獎工具，我們能幫助您輕鬆讀取IG貼文留言，然後由系統隨機選出幸運得獎者。在使用之前，只需將您的Facebook粉絲專頁連結至您的Instagram帳號，並給予本平台應用程式權限即可。
       </Alert>
       <Alert severity='warning' sx={{ textAlign: 'left', marginTop: '8px', marginBottom: '8px' }}>
         <AlertTitle>網站使用條款:</AlertTitle>
-        使用我們的服務代表您接受我們的隱私政策和Instagram使用條款。如果您不同意，請停止使用服務。更改設置請點擊「編輯」。
+        使用我們的服務代表您接受我們的隱私政策和Instagram使用條款。如果您不同意，請停止使用服務。
       </Alert>
       <Divider sx={{ margin: '16px 0px 16px 0px' }} />
       <Grid>
@@ -220,7 +220,7 @@ const IgLotteryPage: React.FC = () => {
           <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
             <AnalyticsIcon color='primary' />
             <Typography variant='h5' sx={{ textAlign: 'left' }}>
-              貼文留言資訊
+              留言名單
             </Typography>
           </Stack>
           <IgPostCommentTable />

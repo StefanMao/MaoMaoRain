@@ -10,6 +10,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  Grid,
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -102,29 +103,31 @@ const IgPostSelectComponent: React.FC = () => {
 
   return (
     <Box>
-      <FormControl sx={{ width: '100%' }}>
-        <Select
-          labelId='custom-select-label'
-          value={selectedPost || ''}
-          onChange={handleSelectPostChange}
-          input={<BootstrapInput />}
-          MenuProps={{ PaperProps: { style: { maxHeight: '250px' } } }}
-        >
-          {postDatas.map((post) => (
-            <MenuItem key={post.id} value={post as any}>
-              <Chip variant='filled' color='info' size='small' label='發佈時間' />
-              <Typography ml={2} style={menuItemContentStyle}>
-                {formatTimestamp(post.timestamp)}
-              </Typography>
-              <Divider style={menuItemDividerStyle} orientation='vertical' flexItem />
-              <IconButton color='primary' onClick={openIgPostUrl}>
-                <OpenInNewIcon />
-              </IconButton>
-              <Typography style={menuItemPostContentStyle}>{post.caption}</Typography>
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <Grid container justifyContent='start'>
+        <FormControl sx={{ m: 1, width: '100%' }}>
+          <Select
+            labelId='custom-select-label'
+            value={selectedPost || ''}
+            onChange={handleSelectPostChange}
+            input={<BootstrapInput />}
+            MenuProps={{ PaperProps: { style: { maxHeight: '250px', width: '100px' } } }}
+          >
+            {postDatas.map((post) => (
+              <MenuItem key={post.id} value={post as any}>
+                <Chip variant='filled' color='info' size='small' label='發佈時間' />
+                <Typography ml={2} style={menuItemContentStyle}>
+                  {formatTimestamp(post.timestamp)}
+                </Typography>
+                <Divider style={menuItemDividerStyle} orientation='vertical' flexItem />
+                <IconButton color='primary' onClick={openIgPostUrl}>
+                  <OpenInNewIcon />
+                </IconButton>
+                <Typography style={menuItemPostContentStyle}>{post.caption}</Typography>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
     </Box>
   );
 };

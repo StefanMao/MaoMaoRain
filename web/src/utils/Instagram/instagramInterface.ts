@@ -13,6 +13,10 @@ export interface IInstagramComment {
   from: IIgUser;
 }
 
+export interface IInstagramCommentData {
+  data?: IInstagramComment[]
+}
+
 export interface IInstagramStore {
   selectedBusinessAccount: FaceBookFanAccount | null;
   selectedPost: IInstagramPost | null;
@@ -22,7 +26,7 @@ export interface IInstagramStore {
 export interface IInstagramPost {
   media_type: string;
   media_url: string;
-  comments?: IInstagramComment[];
+  comments?: IInstagramCommentData;
   caption: string;
   timestamp: string;
   id: string;
