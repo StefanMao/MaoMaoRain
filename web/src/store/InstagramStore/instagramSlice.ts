@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import moment from 'moment';
 
 import { FaceBookFanAccount } from '../../utils/facebook/faceBookSdkTypes';
 import {
@@ -38,6 +39,8 @@ export const instagramSlice = createSlice({
     },
     saveSelectedPost: (state, action: PayloadAction<IInstagramPost | null>) => {
       state.selectedPost = action.payload;
+      state.currentLotterySetting.activeTime.startDate = moment(state.selectedPost?.timestamp).format('YYYY-MM-DD');
+      state.currentLotterySetting.activeTime.endDate = moment().format('YYYY-MM-DD');
     },
     saveCurrentPostComments: (state, action: PayloadAction<IInstagramComment[] | []>) => {
       state.currentPostComments = action.payload;
