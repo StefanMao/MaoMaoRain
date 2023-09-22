@@ -1,5 +1,4 @@
 import { FaceBookFanAccount } from '../../utils/facebook/faceBookSdkTypes';
-
 export interface IIgUser {
   id: string;
   username: string;
@@ -21,6 +20,7 @@ export interface IInstagramStore {
   selectedBusinessAccount: FaceBookFanAccount | null;
   selectedPost: IInstagramPost | null;
   currentPostComments: IInstagramComment[] | [];
+  currentLotterySetting: ILotteryActivitySettings;
 }
 
 export interface IInstagramPost {
@@ -36,4 +36,23 @@ export interface IInstagramPost {
 export interface IInstagramMediaApi {
   data: IInstagramPost[];
   paging?: object;
+}
+
+// 抽獎活動時間
+export interface ILotteryActivityTime {
+  startDate: string;
+  endDate: string;
+}
+
+ // 獎項
+ export interface IPrize {
+  name?: string;
+  quota?: number;
+}
+
+// 完整的抽獎活動設定
+export interface ILotteryActivitySettings {
+  activityName: string;
+  activeTime: ILotteryActivityTime;
+  prizes: IPrize[];
 }

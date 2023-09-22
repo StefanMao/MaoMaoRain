@@ -28,6 +28,7 @@ import IgAccountContent from '../../components/ig-lottery/IgAccountContent';
 import IgAccountVerifyBtn from '../../components/ig-lottery/IgAccountVerifyBtn';
 import IgPostSelectComponent from '../../components/ig-lottery/IgPostSelectComponent';
 import IgPostCommentTable from '../../components/ig-lottery/IgPostCommentTable/IgPostCommentTable';
+import IgLotterySettingContainer from '../../components/ig-lottery/IgLotterySettingContainer/IgLotterySettingContainer';
 
 import { saveUserData, resetUserData } from '../../store/faceBookLogin/userDataSlice';
 import {
@@ -136,7 +137,8 @@ const IgLotteryPage: React.FC = () => {
       <h1>Instagram抽獎工具</h1>
       <Alert severity='info' sx={{ textAlign: 'left' }}>
         <AlertTitle>關於Ig抽獎小工具:</AlertTitle>
-        歡迎使用Social Pluse Hub Instagram抽獎工具，我們能幫助您輕鬆讀取IG貼文留言，然後由系統隨機選出幸運得獎者。在使用之前，只需將您的Facebook粉絲專頁連結至您的Instagram帳號，並給予本平台應用程式權限即可。
+        歡迎使用Social Pluse Hub
+        Instagram抽獎工具，我們能幫助您輕鬆讀取IG貼文留言，然後由系統隨機選出幸運得獎者。在使用之前，只需將您的Facebook粉絲專頁連結至您的Instagram帳號，並給予本平台應用程式權限即可。
       </Alert>
       <Alert severity='warning' sx={{ textAlign: 'left', marginTop: '8px', marginBottom: '8px' }}>
         <AlertTitle>網站使用條款:</AlertTitle>
@@ -218,9 +220,20 @@ const IgLotteryPage: React.FC = () => {
       {!isUserIgAccountsDataEmpty && (
         <Box mt={4}>
           <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
+            <PhotoLibraryIcon color='primary' />
+            <Typography variant='h5' sx={{ textAlign: 'left' }}>
+              抽獎活動設定
+            </Typography>
+          </Stack>
+          <IgLotterySettingContainer />
+        </Box>
+      )}
+      {!isUserIgAccountsDataEmpty && (
+        <Box mt={4}>
+          <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
             <AnalyticsIcon color='primary' />
             <Typography variant='h5' sx={{ textAlign: 'left' }}>
-              留言名單
+              抽獎活動名單
             </Typography>
           </Stack>
           <IgPostCommentTable />

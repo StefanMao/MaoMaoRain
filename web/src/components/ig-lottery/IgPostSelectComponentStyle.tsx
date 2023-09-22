@@ -34,10 +34,6 @@ export const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// export const selectPostInputStyle: CSSProperties = {
-//   border:'1px solid red',
-// };
-
 export const menuItemDividerStyle: CSSProperties = {
   margin: '0px 12px',
 };

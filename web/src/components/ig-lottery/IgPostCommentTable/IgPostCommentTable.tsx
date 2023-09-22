@@ -167,7 +167,6 @@ export const useHook = (): [IgPostCommentTableStates, IgPostCommentTableActions]
 const IgPostCommentTable: React.FC = () => {
   const [states, actions] = useHook();
   const {
-    selectedPost,
     currentPostComments,
     isLoading,
     rowsPerPage,
@@ -175,7 +174,6 @@ const IgPostCommentTable: React.FC = () => {
     isCurrentPostCommentsEmpty,
   } = states;
   const { handleChangePage, handleChangeRowsPerPage, getCommentsToDisplay } = actions;
-  console.log('selectedPost', selectedPost);
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       {isLoading && <CircularProgress />}
@@ -220,7 +218,7 @@ const IgPostCommentTable: React.FC = () => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{ mx: 'auto' }} // 调整样式以水平居中
+          sx={{ mx: 'auto' }}
         />
       )}
     </Paper>
