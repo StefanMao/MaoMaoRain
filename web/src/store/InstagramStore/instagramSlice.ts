@@ -28,6 +28,9 @@ const initialState: IInstagramStore = {
   selectedPost: null,
   currentPostComments: [],
   currentLotterySetting: lotterySettingDefault,
+  currentQualifiedComments: [],
+  currentNonQualifiedComments: [],
+  islotterySettingFormError: false,
 };
 
 export const instagramSlice = createSlice({
@@ -48,6 +51,15 @@ export const instagramSlice = createSlice({
     saveCurrentLotterySetting: (state, action: PayloadAction<ILotteryActivitySettings>) => {
       state.currentLotterySetting = action.payload;
     },
+    saveCurrentQualifiedComments: (state, action: PayloadAction<IInstagramComment[] | []>) => {
+      state.currentQualifiedComments = action.payload;
+    },
+    saveCurrentNonQualifiedComments: (state, action: PayloadAction<IInstagramComment[] | []>) => {
+      state.currentNonQualifiedComments = action.payload;
+    },
+    updateLotterySettingFormErrorStatus: (state, action: PayloadAction<boolean>) => {
+      state.islotterySettingFormError = action.payload;;
+    }
   },
 });
 
@@ -56,6 +68,9 @@ export const {
   saveSelectedPost,
   saveCurrentPostComments,
   saveCurrentLotterySetting,
+  saveCurrentQualifiedComments,
+  saveCurrentNonQualifiedComments,
+  updateLotterySettingFormErrorStatus,
 } = instagramSlice.actions;
 
 export default instagramSlice.reducer;

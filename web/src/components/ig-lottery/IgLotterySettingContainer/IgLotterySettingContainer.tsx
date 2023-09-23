@@ -23,7 +23,10 @@ import {
   IInstagramPost,
 } from '../../../utils/Instagram/instagramInterface';
 import { instagramData } from '../../../store/InstagramStore/selectors';
-import { saveCurrentLotterySetting } from '../../../store/InstagramStore/instagramSlice';
+import {
+  saveCurrentLotterySetting,
+  updateLotterySettingFormErrorStatus,
+} from '../../../store/InstagramStore/instagramSlice';
 
 interface IgLotterySettingContainerStates {
   currentLotterySetting: ILotteryActivitySettings;
@@ -49,23 +52,27 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
     formState: { errors },
     handleSubmit,
   } = useForm({ mode: 'onChange' });
-  // ======
-  // console.log('1111', getValues());
-  // console.log('watch', watch());
-  console.log('error', errors);
-
-  // console.log('currentLotterySetting', currentLotterySetting);
 
   const handleClearFieldsBtnClick = (): void => {
     setFormDefaultValues();
+    dispatch(updateLotterySettingFormErrorStatus(false));
   };
 
   const handleApplyBtnClick = handleSubmit((data) => {
     dispatch(saveCurrentLotterySetting(data as ILotteryActivitySettings));
   });
 
-  const setFormDefaultValues = () => {
+  const setFormDefaultValues = (): void => {
     reset(currentLotterySetting);
+  };
+
+  const updateSettingFormErrorStatus = (errors: FieldErrors<ILotteryActivitySettings>): void => {
+    console.log('updateSettingFormErrorStatus', errors);
+    if (Object.keys(errors).length !== 0) {
+      dispatch(updateLotterySettingFormErrorStatus(true));
+    } else {
+      dispatch(updateLotterySettingFormErrorStatus(false));
+    }
   };
 
   React.useEffect(() => {
@@ -73,7 +80,7 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
   }, [selectedPost]);
 
   React.useEffect(() => {
-    console.log('error', errors);
+    updateSettingFormErrorStatus(errors);
   }, [errors]);
 
   React.useEffect(() => {

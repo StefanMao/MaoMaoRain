@@ -25,9 +25,12 @@ import { FacebookSDK } from '../../../utils/facebook/faceBookSdk';
 import { saveCurrentPostComments } from '../../../store/InstagramStore/instagramSlice';
 import { formatTimestampWithTime } from '../../../utils/moment/moment';
 
-interface IgPostCommentTableStates {
+
+interface IgPostCommentTableProps {
+  commentData: IInstagramComment[] | []
+}
+interface IgPostCommentTableStates extends IgPostCommentTableProps{
   selectedPost: IInstagramPost | null;
-  currentPostComments: IInstagramComment[] | [];
   isLoading: boolean;
   page: number;
   rowsPerPage: number;
@@ -70,9 +73,10 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
-export const useHook = (): [IgPostCommentTableStates, IgPostCommentTableActions] => {
+export const useHook = (props: IgPostCommentTableProps): [IgPostCommentTableStates, IgPostCommentTableActions] => {
+  const { commentData } = props;
   const dispatch = useDispatch();
-  const { selectedPost, currentPostComments }: IInstagramStore = useSelector(instagramData);
+  const { selectedPost }: IInstagramStore = useSelector(instagramData);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -92,10 +96,10 @@ export const useHook = (): [IgPostCommentTableStates, IgPostCommentTableActions]
   const getCommentsToDisplay = (): IInstagramComment[] => {
     const startIndex = page * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    return currentPostComments.slice(startIndex, endIndex);
+    return commentData.slice(startIndex, endIndex);
   };
 
-  const isCurrentPostCommentsEmpty = !currentPostComments.length;
+  const isCurrentPostCommentsEmpty = !commentData.length;
 
   const getComments = async (): Promise<void> => {
     try {
@@ -120,6 +124,32 @@ export const useHook = (): [IgPostCommentTableStates, IgPostCommentTableActions]
         fakeComments.push(comment);
       }
 
+      const comment2 = {
+        id: `comment-2222}`,
+        text: `這是第 2222 條留言的內容。`,
+        username: `user2222`,
+        timestamp: `2023-08-01`,
+        like_count: 0,
+        from: {
+          id: '11111',
+          username: '2222',
+        },
+      };
+
+      const comment4 = {
+        id: `comment-55555}`,
+        text: `這是第 2222 條留言的內容。`,
+        username: `user2222`,
+        timestamp: `2023-12-11`,
+        like_count: 0,
+        from: {
+          id: '11111',
+          username: '2222',
+        },
+      };
+      fakeComments.push(comment2);
+      fakeComments.push(comment4);
+
       const fbSdkInstance = await FacebookSDK.getInstance();
       setIsLoading(true);
       const response: IInstagramPost = await fbSdkInstance.getPostComments(selectedPost.id);
@@ -142,17 +172,13 @@ export const useHook = (): [IgPostCommentTableStates, IgPostCommentTableActions]
     getComments();
   }, [selectedPost]);
 
-  React.useEffect(() => {
-    console.log('currentPostComments', currentPostComments);
-  }, [currentPostComments]);
-
   const states: IgPostCommentTableStates = {
     selectedPost,
-    currentPostComments,
     isLoading,
     page,
     rowsPerPage,
     isCurrentPostCommentsEmpty,
+    commentData,
   };
   const actions: IgPostCommentTableActions = {
     getComments,
@@ -164,20 +190,20 @@ export const useHook = (): [IgPostCommentTableStates, IgPostCommentTableActions]
   return [states, actions];
 };
 
-const IgPostCommentTable: React.FC = () => {
-  const [states, actions] = useHook();
+const IgPostCommentTable: React.FC<IgPostCommentTableProps> = (props) => {
+  const [states, actions] = useHook(props);
   const {
-    currentPostComments,
     isLoading,
     rowsPerPage,
     page,
     isCurrentPostCommentsEmpty,
+    commentData,
   } = states;
   const { handleChangePage, handleChangeRowsPerPage, getCommentsToDisplay } = actions;
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       {isLoading && <CircularProgress />}
-      <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+      <TableContainer component={Paper} sx={{ height: 450 }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -192,7 +218,7 @@ const IgPostCommentTable: React.FC = () => {
               <TableRow>
                 <TableCell colSpan={3}>
                   <Typography variant='body2' color='error'>
-                    這篇貼文沒有留言!
+                    暫無資料!
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -213,7 +239,7 @@ const IgPostCommentTable: React.FC = () => {
         <TablePagination
           rowsPerPageOptions={[10, 25, 50]}
           component='div'
-          count={currentPostComments.length}
+          count={commentData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

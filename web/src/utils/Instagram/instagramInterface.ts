@@ -21,6 +21,9 @@ export interface IInstagramStore {
   selectedPost: IInstagramPost | null;
   currentPostComments: IInstagramComment[] | [];
   currentLotterySetting: ILotteryActivitySettings;
+  currentQualifiedComments: IInstagramComment[] | [];
+  currentNonQualifiedComments: IInstagramComment[] | [];
+  islotterySettingFormError: boolean;
 }
 
 export interface IInstagramPost {

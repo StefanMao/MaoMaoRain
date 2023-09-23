@@ -27,8 +27,8 @@ import FaceBookUserInfo from '../../components/ig-lottery/FaceBookUserInfo';
 import IgAccountContent from '../../components/ig-lottery/IgAccountContent';
 import IgAccountVerifyBtn from '../../components/ig-lottery/IgAccountVerifyBtn';
 import IgPostSelectComponent from '../../components/ig-lottery/IgPostSelectComponent';
-import IgPostCommentTable from '../../components/ig-lottery/IgPostCommentTable/IgPostCommentTable';
 import IgLotterySettingContainer from '../../components/ig-lottery/IgLotterySettingContainer/IgLotterySettingContainer';
+import IgPostCommentTabs from '../../components/ig-lottery/IgPostCommentTabs/IgPostCommentTabs';
 
 import { saveUserData, resetUserData } from '../../store/faceBookLogin/userDataSlice';
 import {
@@ -236,7 +236,7 @@ const IgLotteryPage: React.FC = () => {
               抽獎活動名單
             </Typography>
           </Stack>
-          <IgPostCommentTable />
+          <IgPostCommentTabs />
         </Box>
       )}
     </Container>
