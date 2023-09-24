@@ -59,6 +59,15 @@ export const instagramSlice = createSlice({
     },
     updateLotterySettingFormErrorStatus: (state, action: PayloadAction<boolean>) => {
       state.islotterySettingFormError = action.payload;;
+    },
+    initCurrentLotterySetting:(state) => {
+      state.currentLotterySetting = {
+        ...lotterySettingDefault,
+        activeTime: {
+          startDate: moment(state.selectedPost?.timestamp).format('YYYY-MM-DD'),
+          endDate: moment().format('YYYY-MM-DD'),
+        },
+      };
     }
   },
 });
@@ -71,6 +80,7 @@ export const {
   saveCurrentQualifiedComments,
   saveCurrentNonQualifiedComments,
   updateLotterySettingFormErrorStatus,
+  initCurrentLotterySetting,
 } = instagramSlice.actions;
 
 export default instagramSlice.reducer;

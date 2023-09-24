@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller, Control, FieldErrors } from 'react-hook-form';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,14 +18,17 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import SaveIcon from '@mui/icons-material/Save';
 
 import { ApplySettingsBtnStyle } from './IgLotterySettingContainerStyle';
+import CustomSnackbar from '../../commonUI/customSnackbar/customSnackbar';
 import {
   ILotteryActivitySettings,
   IInstagramPost,
 } from '../../../utils/Instagram/instagramInterface';
+
 import { instagramData } from '../../../store/InstagramStore/selectors';
 import {
   saveCurrentLotterySetting,
   updateLotterySettingFormErrorStatus,
+  initCurrentLotterySetting,
 } from '../../../store/InstagramStore/instagramSlice';
 
 interface IgLotterySettingContainerStates {
@@ -33,46 +36,62 @@ interface IgLotterySettingContainerStates {
   control: Control;
   selectedPost: IInstagramPost | null;
   errors: FieldErrors<ILotteryActivitySettings>;
+  snackbarOpen: boolean;
 }
 
 interface IgLotterySettingContainerActions {
   handleClearFieldsBtnClick: () => void;
   handleApplyBtnClick: () => void;
+  handleSnackbarOnClose: () => void;
   getValues: (field: string) => Record<string, any>;
 }
+const snackBarMessage = {
+  applySetting: '已套用抽獎活動設定，請至抽獎活動名單查看結果。',
+};
 
 export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingContainerActions] => {
   const dispatch = useDispatch();
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const { currentLotterySetting, selectedPost } = useSelector(instagramData);
 
   const {
     control,
     getValues,
-    reset,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm({ mode: 'onChange' });
 
   const handleClearFieldsBtnClick = (): void => {
-    setFormDefaultValues();
     dispatch(updateLotterySettingFormErrorStatus(false));
+    dispatch(initCurrentLotterySetting());
+  };
+
+  const resetFrom = (): void => {
+    if (currentLotterySetting.activityName === '') {
+      reset(currentLotterySetting);
+    }
   };
 
   const handleApplyBtnClick = handleSubmit((data) => {
     dispatch(saveCurrentLotterySetting(data as ILotteryActivitySettings));
+    setSnackbarOpen(true);
   });
 
   const setFormDefaultValues = (): void => {
-    reset(currentLotterySetting);
+    dispatch(initCurrentLotterySetting());
   };
 
   const updateSettingFormErrorStatus = (errors: FieldErrors<ILotteryActivitySettings>): void => {
-    console.log('updateSettingFormErrorStatus', errors);
     if (Object.keys(errors).length !== 0) {
       dispatch(updateLotterySettingFormErrorStatus(true));
     } else {
       dispatch(updateLotterySettingFormErrorStatus(false));
     }
+  };
+
+  const handleSnackbarOnClose = (): void => {
+    setSnackbarOpen(false);
   };
 
   React.useEffect(() => {
@@ -84,7 +103,8 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
   }, [errors]);
 
   React.useEffect(() => {
-    console.log('currentLotterySetting', currentLotterySetting);
+    // 確認 currentLotterySetting 清空之後，在執行reset Form
+    resetFrom();
   }, [currentLotterySetting]);
 
   const states: IgLotterySettingContainerStates = {
@@ -92,20 +112,23 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
     control,
     selectedPost,
     errors,
+    snackbarOpen,
   };
 
   const actions: IgLotterySettingContainerActions = {
     handleClearFieldsBtnClick,
     getValues,
     handleApplyBtnClick,
+    handleSnackbarOnClose,
   };
   return [states, actions];
 };
 
 const IgLotterySettingContainer: React.FC = () => {
   const [states, actions] = useHook();
-  const { control, errors } = states;
-  const { handleClearFieldsBtnClick, getValues, handleApplyBtnClick } = actions;
+  const { control, errors, snackbarOpen } = states;
+  const { handleClearFieldsBtnClick, getValues, handleApplyBtnClick, handleSnackbarOnClose } =
+    actions;
 
   return (
     <Paper elevation={2} sx={{ padding: '12px' }}>
@@ -271,6 +294,13 @@ const IgLotterySettingContainer: React.FC = () => {
           </Button>
         </CardActions>
       </form>
+      <CustomSnackbar
+        open={snackbarOpen}
+        message={snackBarMessage.applySetting}
+        severity='success'
+        autoHideDuration={3000}
+        onClose={handleSnackbarOnClose}
+      />
       {/* <FormControl fullWidth sx={{ marginTop: '12px' }}>
         <Typography variant='h5' align='left'>
           其他條件設定

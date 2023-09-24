@@ -31,6 +31,7 @@ import IgLotterySettingContainer from '../../components/ig-lottery/IgLotterySett
 import IgPostCommentTabs from '../../components/ig-lottery/IgPostCommentTabs/IgPostCommentTabs';
 
 import { saveUserData, resetUserData } from '../../store/faceBookLogin/userDataSlice';
+import { instagramData } from '../../store/InstagramStore/selectors';
 import {
   FacebookAuthResponse,
   MeApiResponse,
@@ -55,17 +56,21 @@ interface IgLotteryPageStates {
   isUserIgAccountsDataEmpty: boolean;
   isFacebookLoggedIn: boolean;
   isFacebookUserDataEmpty: boolean;
+  isSelectedPostDateEmpty: boolean;
 }
 
 export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
   const dispatch = useDispatch();
   const userFbLoggInData: UserDataState = useSelector(selectUserData);
+  const { selectedPost } = useSelector(instagramData);
   const isUserIgAccountsDataEmpty: boolean =
     !userFbLoggInData?.accounts || userFbLoggInData?.accounts.data.length === 0;
 
   const isFacebookLoggedIn: boolean = !!Cookies.get('FacebookAccessToken');
 
   const isFacebookUserDataEmpty: boolean = userFbLoggInData.userID === '';
+
+  const isSelectedPostDateEmpty: boolean = selectedPost?.timestamp === '';
 
   const renderFacebookStatusIcon = (isEmpty: boolean) => {
     return isEmpty ? <LinkOffIcon sx={{ color: 'red' }} /> : <LinkIcon sx={{ color: 'green' }} />;
@@ -116,6 +121,7 @@ export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
     isUserIgAccountsDataEmpty,
     isFacebookLoggedIn,
     isFacebookUserDataEmpty,
+    isSelectedPostDateEmpty,
   };
   const actions: IgLotteryPageActions = {
     saveLoggedInDataToStore,
@@ -129,7 +135,12 @@ export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
 
 const IgLotteryPage: React.FC = () => {
   const [states, actions] = useHook();
-  const { userFbLoggInData, isFacebookUserDataEmpty, isUserIgAccountsDataEmpty } = states;
+  const {
+    userFbLoggInData,
+    isFacebookUserDataEmpty,
+    isUserIgAccountsDataEmpty,
+    isSelectedPostDateEmpty,
+  } = states;
   const { facebookLogoutBtnClick, renderFacebookStatusIcon } = actions;
 
   return (
@@ -206,7 +217,7 @@ const IgLotteryPage: React.FC = () => {
           {!isUserIgAccountsDataEmpty && <IgAccountContent accounts={userFbLoggInData.accounts} />}
         </Box>
       )}
-      {!isUserIgAccountsDataEmpty && (
+      {!isUserIgAccountsDataEmpty && !isSelectedPostDateEmpty && (
         <Box mt={4}>
           <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
             <PhotoLibraryIcon color='primary' />
