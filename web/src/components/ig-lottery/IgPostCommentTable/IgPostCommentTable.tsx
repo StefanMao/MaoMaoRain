@@ -24,6 +24,7 @@ import {
 import { FacebookSDK } from '../../../utils/facebook/faceBookSdk';
 import { saveCurrentPostComments } from '../../../store/InstagramStore/instagramSlice';
 import { formatTimestampWithTime } from '../../../utils/moment/moment';
+import {fakeCommentData} from '../../../utils/const/fakeData';
 
 
 interface IgPostCommentTableProps {
@@ -108,48 +109,6 @@ export const useHook = (props: IgPostCommentTableProps): [IgPostCommentTableStat
         return;
       }
 
-      const fakeComments = [];
-      for (let i = 0; i < 100; i++) {
-        const comment = {
-          id: `comment-${i + 1}`,
-          text: `這是第 ${i + 1} 條留言的內容。`,
-          username: `user${i + 1}`,
-          timestamp: `2023-01-01`,
-          like_count: 0,
-          from: {
-            id: '11111',
-            username: '2222',
-          },
-        };
-        fakeComments.push(comment);
-      }
-
-      const comment2 = {
-        id: `comment-2222}`,
-        text: `這是第 2222 條留言的內容。`,
-        username: `user2222`,
-        timestamp: `2023-08-01`,
-        like_count: 0,
-        from: {
-          id: '11111',
-          username: '2222',
-        },
-      };
-
-      const comment4 = {
-        id: `comment-55555}`,
-        text: `這是第 2222 條留言的內容。`,
-        username: `user2222`,
-        timestamp: `2023-12-11`,
-        like_count: 0,
-        from: {
-          id: '11111',
-          username: '2222',
-        },
-      };
-      fakeComments.push(comment2);
-      fakeComments.push(comment4);
-
       const fbSdkInstance = await FacebookSDK.getInstance();
       setIsLoading(true);
       const response: IInstagramPost = await fbSdkInstance.getPostComments(selectedPost.id);
@@ -159,7 +118,7 @@ export const useHook = (props: IgPostCommentTableProps): [IgPostCommentTableStat
         dispatch(saveCurrentPostComments([]));
         return;
       }
-      response.comments.data = fakeComments;
+      response.comments.data = fakeCommentData();
       dispatch(saveCurrentPostComments(response.comments.data));
     } catch (error) {
       console.error('An error occurred while fetching comments:', error);

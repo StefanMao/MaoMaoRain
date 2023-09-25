@@ -17,11 +17,14 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SaveIcon from '@mui/icons-material/Save';
 
-import { ApplySettingsBtnStyle } from './IgLotterySettingContainerStyle';
+import { ApplySettingsBtnStyle, LotteryDrawBtnStyle } from './IgLotterySettingContainerStyle';
 import CustomSnackbar from '../../commonUI/customSnackbar/customSnackbar';
 import {
   ILotteryActivitySettings,
   IInstagramPost,
+  IInstagramComment,
+  ILotteryResult,
+  IPerformLotteryResult,
 } from '../../../utils/Instagram/instagramInterface';
 
 import { instagramData } from '../../../store/InstagramStore/selectors';
@@ -29,6 +32,7 @@ import {
   saveCurrentLotterySetting,
   updateLotterySettingFormErrorStatus,
   initCurrentLotterySetting,
+  updateLotterySettingApplyStatus,
 } from '../../../store/InstagramStore/instagramSlice';
 
 interface IgLotterySettingContainerStates {
@@ -37,11 +41,13 @@ interface IgLotterySettingContainerStates {
   selectedPost: IInstagramPost | null;
   errors: FieldErrors<ILotteryActivitySettings>;
   snackbarOpen: boolean;
+  isActivitySettingApplied: boolean;
 }
 
 interface IgLotterySettingContainerActions {
   handleClearFieldsBtnClick: () => void;
   handleApplyBtnClick: () => void;
+  handleLotteryDrawBtnClick: () => void;
   handleSnackbarOnClose: () => void;
   getValues: (field: string) => Record<string, any>;
 }
@@ -52,19 +58,75 @@ const snackBarMessage = {
 export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingContainerActions] => {
   const dispatch = useDispatch();
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
-  const { currentLotterySetting, selectedPost } = useSelector(instagramData);
+  const {
+    currentLotterySetting,
+    selectedPost,
+    isActivitySettingApplied,
+    currentQualifiedComments,
+  } = useSelector(instagramData);
 
   const {
     control,
     getValues,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     reset,
   } = useForm({ mode: 'onChange' });
 
+  const handleLotteryDrawBtnClick = (): void => {
+    console.log('currentLotterySetting', currentLotterySetting);
+    console.log('currentQualifiedComments', currentQualifiedComments);
+    const data = performLottery(currentLotterySetting, currentQualifiedComments);
+    console.log('data', data);
+  };
+
+  const performLottery = (
+    activitySettings: ILotteryActivitySettings,
+    qualifiedComments: IInstagramComment[],
+  ): IPerformLotteryResult => {
+    const { prizes } = activitySettings;
+    const lotteryResults: ILotteryResult[] = [];
+    const copyQualifiedComments = [...qualifiedComments];
+    const lotteryTime = moment().format('YYYY-MM-DD hh:mm:ss');
+
+    prizes.forEach((prize) => {
+      const { name, quota } = prize;
+
+      if (!quota || !name) return [];
+
+      const winners = [];
+
+      // 如果超過100% 則以100%計算
+      const prizeProbability = Math.min((quota / qualifiedComments.length) * 100, 100);
+
+      for (let i = 0; i < quota; i++) {
+        
+        if(copyQualifiedComments.length === 0) continue;
+
+        // 避免 獎項名額 數量大於 留言數量
+        const randomIndex = Math.floor(Math.random() * copyQualifiedComments.length);
+        const winner = copyQualifiedComments.splice(randomIndex, 1);
+        winners.push(winner[0]);
+      }
+
+      lotteryResults.push({
+        prizeName: name,
+        winners,
+        probability: prizeProbability.toFixed(2) + '%',
+      });
+    });
+
+    return {
+      lotteryTime,
+      activitySettings,
+      lotteryResults,
+    };
+  };
+
   const handleClearFieldsBtnClick = (): void => {
     dispatch(updateLotterySettingFormErrorStatus(false));
     dispatch(initCurrentLotterySetting());
+    dispatch(updateLotterySettingApplyStatus(false));
   };
 
   const resetFrom = (): void => {
@@ -76,12 +138,20 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
   const handleApplyBtnClick = handleSubmit((data) => {
     dispatch(saveCurrentLotterySetting(data as ILotteryActivitySettings));
     setSnackbarOpen(true);
+    dispatch(updateLotterySettingApplyStatus(true));
+    reset(currentLotterySetting, { keepValues: true });
   });
 
   const setFormDefaultValues = (): void => {
     dispatch(initCurrentLotterySetting());
+    dispatch(updateLotterySettingApplyStatus(false));
   };
 
+  /**
+   * update lottery Setting form error status
+   * @param errors
+   * 檢查活動設定區塊表單的欄位是否有錯誤情況，記錄到Redux Store
+   */
   const updateSettingFormErrorStatus = (errors: FieldErrors<ILotteryActivitySettings>): void => {
     if (Object.keys(errors).length !== 0) {
       dispatch(updateLotterySettingFormErrorStatus(true));
@@ -107,12 +177,20 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
     resetFrom();
   }, [currentLotterySetting]);
 
+  React.useEffect(() => {
+    // 套用設定後，使用者修改欄位，需要重新套用設定
+    if (isDirty && isActivitySettingApplied) {
+      dispatch(updateLotterySettingApplyStatus(false));
+    }
+  }, [isDirty]);
+
   const states: IgLotterySettingContainerStates = {
     currentLotterySetting,
     control,
     selectedPost,
     errors,
     snackbarOpen,
+    isActivitySettingApplied,
   };
 
   const actions: IgLotterySettingContainerActions = {
@@ -120,15 +198,21 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
     getValues,
     handleApplyBtnClick,
     handleSnackbarOnClose,
+    handleLotteryDrawBtnClick,
   };
   return [states, actions];
 };
 
 const IgLotterySettingContainer: React.FC = () => {
   const [states, actions] = useHook();
-  const { control, errors, snackbarOpen } = states;
-  const { handleClearFieldsBtnClick, getValues, handleApplyBtnClick, handleSnackbarOnClose } =
-    actions;
+  const { control, errors, snackbarOpen, isActivitySettingApplied } = states;
+  const {
+    handleClearFieldsBtnClick,
+    getValues,
+    handleApplyBtnClick,
+    handleSnackbarOnClose,
+    handleLotteryDrawBtnClick,
+  } = actions;
 
   return (
     <Paper elevation={2} sx={{ padding: '12px' }}>
@@ -138,7 +222,7 @@ const IgLotterySettingContainer: React.FC = () => {
             抽獎活動名稱
           </Typography>
           <Button
-            variant='contained'
+            variant='outlined'
             size='small'
             startIcon={<RefreshIcon />}
             onClick={handleClearFieldsBtnClick}
@@ -270,7 +354,7 @@ const IgLotterySettingContainer: React.FC = () => {
                     {...field}
                     type='number'
                     sx={{ height: '60px', flex: 1 }}
-                    label='名額'
+                    label='請輸入名額'
                     variant='outlined'
                     margin='normal'
                     value={field.value || ''}
@@ -283,21 +367,34 @@ const IgLotterySettingContainer: React.FC = () => {
           </Grid>
         </FormControl>
         <CardActions sx={{ flexDirection: { xs: 'column', sm: 'row' }, marginTop: '8px' }}>
-          <Button
-            variant='contained'
-            sx={{ width: '100%' }}
-            style={ApplySettingsBtnStyle}
-            startIcon={<SaveIcon />}
-            onClick={handleApplyBtnClick}
-          >
-            套用設定
-          </Button>
+          {isActivitySettingApplied ? (
+            <Button
+              variant='contained'
+              sx={{ width: '100%' }}
+              style={LotteryDrawBtnStyle}
+              startIcon={<SaveIcon />}
+              color='primary'
+              onClick={handleLotteryDrawBtnClick}
+            >
+              開獎!
+            </Button>
+          ) : (
+            <Button
+              variant='contained'
+              sx={{ width: '100%' }}
+              style={ApplySettingsBtnStyle}
+              startIcon={<SaveIcon />}
+              onClick={handleApplyBtnClick}
+            >
+              套用設定
+            </Button>
+          )}
         </CardActions>
       </form>
       <CustomSnackbar
         open={snackbarOpen}
         message={snackBarMessage.applySetting}
-        severity='success'
+        severity='info'
         autoHideDuration={3000}
         onClose={handleSnackbarOnClose}
       />

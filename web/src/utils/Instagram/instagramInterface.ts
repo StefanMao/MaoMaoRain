@@ -13,7 +13,7 @@ export interface IInstagramComment {
 }
 
 export interface IInstagramCommentData {
-  data?: IInstagramComment[]
+  data?: IInstagramComment[];
 }
 
 export interface IInstagramStore {
@@ -24,6 +24,7 @@ export interface IInstagramStore {
   currentQualifiedComments: IInstagramComment[] | [];
   currentNonQualifiedComments: IInstagramComment[] | [];
   islotterySettingFormError: boolean;
+  isActivitySettingApplied: boolean;
 }
 
 export interface IInstagramPost {
@@ -47,8 +48,8 @@ export interface ILotteryActivityTime {
   endDate: string;
 }
 
- // 獎項
- export interface IPrize {
+// 獎項
+export interface IPrize {
   name?: string;
   quota?: number;
 }
@@ -58,4 +59,15 @@ export interface ILotteryActivitySettings {
   activityName: string;
   activeTime: ILotteryActivityTime;
   prizes: IPrize[];
+}
+
+export interface ILotteryResult {
+  prizeName: string;
+  winners: IInstagramComment[] | [];
+  probability: string;
+}
+export interface IPerformLotteryResult {
+  lotteryTime: string;
+  activitySettings: ILotteryActivitySettings;
+  lotteryResults: ILotteryResult[] | [];
 }

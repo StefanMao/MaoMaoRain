@@ -24,7 +24,7 @@ const CustomSnackbar: React.FC<CustomSnackbarProps> = ({
       onClose={onClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
     >
-      <Alert severity={severity} sx={{ width: '100%' }}>
+      <Alert variant='filled' severity={severity} sx={{ width: '100%' }}>
         {message}
       </Alert>
     </Snackbar>

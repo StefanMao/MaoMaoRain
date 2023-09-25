@@ -31,6 +31,7 @@ const initialState: IInstagramStore = {
   currentQualifiedComments: [],
   currentNonQualifiedComments: [],
   islotterySettingFormError: false,
+  isActivitySettingApplied: false,
 };
 
 export const instagramSlice = createSlice({
@@ -68,6 +69,9 @@ export const instagramSlice = createSlice({
           endDate: moment().format('YYYY-MM-DD'),
         },
       };
+    },
+    updateLotterySettingApplyStatus: (state, action: PayloadAction<boolean>) => {
+      state.isActivitySettingApplied = action.payload;
     }
   },
 });
@@ -81,6 +85,7 @@ export const {
   saveCurrentNonQualifiedComments,
   updateLotterySettingFormErrorStatus,
   initCurrentLotterySetting,
+  updateLotterySettingApplyStatus,
 } = instagramSlice.actions;
 
 export default instagramSlice.reducer;
