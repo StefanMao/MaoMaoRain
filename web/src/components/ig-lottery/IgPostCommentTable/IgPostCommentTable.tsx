@@ -24,13 +24,14 @@ import {
 import { FacebookSDK } from '../../../utils/facebook/faceBookSdk';
 import { saveCurrentPostComments } from '../../../store/InstagramStore/instagramSlice';
 import { formatTimestampWithTime } from '../../../utils/moment/moment';
-import {fakeCommentData} from '../../../utils/const/fakeData';
+import { fakeCommentData } from '../../../utils/const/fakeData';
 
+import { tableStyle } from './IgPostCommentTableStyle';
 
 interface IgPostCommentTableProps {
-  commentData: IInstagramComment[] | []
+  commentData: IInstagramComment[] | [];
 }
-interface IgPostCommentTableStates extends IgPostCommentTableProps{
+interface IgPostCommentTableStates extends IgPostCommentTableProps {
   selectedPost: IInstagramPost | null;
   isLoading: boolean;
   page: number;
@@ -74,7 +75,9 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
-export const useHook = (props: IgPostCommentTableProps): [IgPostCommentTableStates, IgPostCommentTableActions] => {
+export const useHook = (
+  props: IgPostCommentTableProps,
+): [IgPostCommentTableStates, IgPostCommentTableActions] => {
   const { commentData } = props;
   const dispatch = useDispatch();
   const { selectedPost }: IInstagramStore = useSelector(instagramData);
@@ -151,19 +154,13 @@ export const useHook = (props: IgPostCommentTableProps): [IgPostCommentTableStat
 
 const IgPostCommentTable: React.FC<IgPostCommentTableProps> = (props) => {
   const [states, actions] = useHook(props);
-  const {
-    isLoading,
-    rowsPerPage,
-    page,
-    isCurrentPostCommentsEmpty,
-    commentData,
-  } = states;
+  const { isLoading, rowsPerPage, page, isCurrentPostCommentsEmpty, commentData } = states;
   const { handleChangePage, handleChangeRowsPerPage, getCommentsToDisplay } = actions;
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       {isLoading && <CircularProgress />}
       <TableContainer component={Paper} sx={{ height: 450 }}>
-        <Table stickyHeader>
+        <Table stickyHeader style={tableStyle}>
           <TableHead>
             <TableRow>
               {/* Header */}
@@ -187,7 +184,9 @@ const IgPostCommentTable: React.FC<IgPostCommentTableProps> = (props) => {
                   <TableCell sx={{ width: 60 }}>{index + 1}</TableCell>
                   <TableCell sx={{ width: 100 }}>{comment.from.username}</TableCell>
                   <TableCell>{comment.text}</TableCell>
-                  <TableCell sx={{ width: 120 }}>{formatTimestampWithTime(comment.timestamp)}</TableCell>
+                  <TableCell sx={{ width: 120 }}>
+                    {formatTimestampWithTime(comment.timestamp)}
+                  </TableCell>
                 </TableRow>
               ))
             )}

@@ -25,6 +25,7 @@ export interface IInstagramStore {
   currentNonQualifiedComments: IInstagramComment[] | [];
   islotterySettingFormError: boolean;
   isActivitySettingApplied: boolean;
+  performLotteryResult: IPerformLotteryResult | null;
 }
 
 export interface IInstagramPost {
@@ -63,11 +64,12 @@ export interface ILotteryActivitySettings {
 
 export interface ILotteryResult {
   prizeName: string;
-  winners: IInstagramComment[] | [];
+  eachPrizeWinners: IInstagramComment[] | [];
   probability: string;
 }
 export interface IPerformLotteryResult {
   lotteryTime: string;
   activitySettings: ILotteryActivitySettings;
   lotteryResults: ILotteryResult[] | [];
+  allWinners:IInstagramComment[] | []
 }

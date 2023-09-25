@@ -29,6 +29,7 @@ import IgAccountVerifyBtn from '../../components/ig-lottery/IgAccountVerifyBtn';
 import IgPostSelectComponent from '../../components/ig-lottery/IgPostSelectComponent';
 import IgLotterySettingContainer from '../../components/ig-lottery/IgLotterySettingContainer/IgLotterySettingContainer';
 import IgPostCommentTabs from '../../components/ig-lottery/IgPostCommentTabs/IgPostCommentTabs';
+import IgPostCommentTable from '../../components/ig-lottery/IgPostCommentTable/IgPostCommentTable';
 
 import { saveUserData, resetUserData } from '../../store/faceBookLogin/userDataSlice';
 import { instagramData } from '../../store/InstagramStore/selectors';
@@ -37,6 +38,7 @@ import {
   MeApiResponse,
   FacebookLoginStatus,
 } from '../../utils/facebook/faceBookSdkTypes';
+import { IPerformLotteryResult } from '../../utils/Instagram/instagramInterface';
 import { selectUserData } from '../../store/faceBookLogin/selectors';
 import { FacebookSDK } from '../../utils/facebook/faceBookSdk';
 
@@ -57,12 +59,13 @@ interface IgLotteryPageStates {
   isFacebookLoggedIn: boolean;
   isFacebookUserDataEmpty: boolean;
   isSelectedPostDateEmpty: boolean;
+  performLotteryResult: IPerformLotteryResult | null;
 }
 
 export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
   const dispatch = useDispatch();
   const userFbLoggInData: UserDataState = useSelector(selectUserData);
-  const { selectedPost } = useSelector(instagramData);
+  const { selectedPost, performLotteryResult } = useSelector(instagramData);
   const isUserIgAccountsDataEmpty: boolean =
     !userFbLoggInData?.accounts || userFbLoggInData?.accounts.data.length === 0;
 
@@ -122,6 +125,7 @@ export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
     isFacebookLoggedIn,
     isFacebookUserDataEmpty,
     isSelectedPostDateEmpty,
+    performLotteryResult,
   };
   const actions: IgLotteryPageActions = {
     saveLoggedInDataToStore,
@@ -140,6 +144,7 @@ const IgLotteryPage: React.FC = () => {
     isFacebookUserDataEmpty,
     isUserIgAccountsDataEmpty,
     isSelectedPostDateEmpty,
+    performLotteryResult,
   } = states;
   const { facebookLogoutBtnClick, renderFacebookStatusIcon } = actions;
 
@@ -237,6 +242,29 @@ const IgLotteryPage: React.FC = () => {
             </Typography>
           </Stack>
           <IgLotterySettingContainer />
+        </Box>
+      )}
+      {!isUserIgAccountsDataEmpty && performLotteryResult && (
+        <Box mt={4} justifyContent='start'>
+          <Stack direction='row' justifyContent='start' alignItems='center' spacing={2} mb={1}>
+            <AnalyticsIcon color='primary' />
+            <Typography variant='h5' sx={{ textAlign: 'left' }}>
+              中獎名單
+            </Typography>
+          </Stack>
+          <Stack spacing={2} direction='row' justifyContent='start' alignItems='center' mb={1}>
+            <Typography
+              variant='subtitle2'
+              sx={{ textAlign: 'left', color: '#FF4545', fontWeight: 'bold' }}
+            >
+              此中獎名單由 Social Pluse Hub 系統自動產生，恭喜以下中獎者。
+            </Typography>
+
+            <Button variant='outlined' disabled>
+              詳細資訊
+            </Button>
+          </Stack>
+          <IgPostCommentTable commentData={performLotteryResult?.allWinners} />
         </Box>
       )}
       {!isUserIgAccountsDataEmpty && (

@@ -26,7 +26,7 @@ import {
   menuItemDividerStyle,
   BootstrapInput,
 } from './IgPostSelectComponentStyle';
-import { saveSelectedPost } from '../../store/InstagramStore/instagramSlice';
+import { saveSelectedPost, saveLotteryResults } from '../../store/InstagramStore/instagramSlice';
 
 interface IgPostSelectComponentActions {
   getIgPosts: () => Promise<void>;
@@ -54,6 +54,7 @@ export const useHook = (): [IgPostSelectComponentStates, IgPostSelectComponentAc
   const handleSelectPostChange = (event: SelectChangeEvent<IInstagramPost | null>): void => {
     const post = event.target.value as IInstagramPost;
     dispatch(saveSelectedPost(post));
+    dispatch(saveLotteryResults(null));
   };
 
   const initSelectPostDefault = () => {
@@ -81,10 +82,6 @@ export const useHook = (): [IgPostSelectComponentStates, IgPostSelectComponentAc
     console.log('selectedBusinessAccount Change', selectedBusinessAccount);
     getIgPosts();
   }, [selectedBusinessAccount]);
-
-  React.useEffect(() => {
-    console.log('selectedPostStore change', selectedPost);
-  }, [selectedPost]);
 
   const states: IgPostSelectComponentStates = { postDatas, selectedPost };
   const actions: IgPostSelectComponentActions = {

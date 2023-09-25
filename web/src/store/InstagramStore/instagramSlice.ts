@@ -7,6 +7,7 @@ import {
   IInstagramPost,
   IInstagramComment,
   ILotteryActivitySettings,
+  IPerformLotteryResult,
 } from '../../utils/Instagram/instagramInterface';
 
 const lotterySettingDefault = {
@@ -32,6 +33,7 @@ const initialState: IInstagramStore = {
   currentNonQualifiedComments: [],
   islotterySettingFormError: false,
   isActivitySettingApplied: false,
+  performLotteryResult: null,
 };
 
 export const instagramSlice = createSlice({
@@ -43,7 +45,9 @@ export const instagramSlice = createSlice({
     },
     saveSelectedPost: (state, action: PayloadAction<IInstagramPost | null>) => {
       state.selectedPost = action.payload;
-      state.currentLotterySetting.activeTime.startDate = moment(state.selectedPost?.timestamp).format('YYYY-MM-DD');
+      state.currentLotterySetting.activeTime.startDate = moment(
+        state.selectedPost?.timestamp,
+      ).format('YYYY-MM-DD');
       state.currentLotterySetting.activeTime.endDate = moment().format('YYYY-MM-DD');
     },
     saveCurrentPostComments: (state, action: PayloadAction<IInstagramComment[] | []>) => {
@@ -59,9 +63,9 @@ export const instagramSlice = createSlice({
       state.currentNonQualifiedComments = action.payload;
     },
     updateLotterySettingFormErrorStatus: (state, action: PayloadAction<boolean>) => {
-      state.islotterySettingFormError = action.payload;;
+      state.islotterySettingFormError = action.payload;
     },
-    initCurrentLotterySetting:(state) => {
+    initCurrentLotterySetting: (state) => {
       state.currentLotterySetting = {
         ...lotterySettingDefault,
         activeTime: {
@@ -72,7 +76,10 @@ export const instagramSlice = createSlice({
     },
     updateLotterySettingApplyStatus: (state, action: PayloadAction<boolean>) => {
       state.isActivitySettingApplied = action.payload;
-    }
+    },
+    saveLotteryResults: (state, action: PayloadAction<IPerformLotteryResult | null>) => {
+      state.performLotteryResult = action.payload;
+    },
   },
 });
 
@@ -86,6 +93,7 @@ export const {
   updateLotterySettingFormErrorStatus,
   initCurrentLotterySetting,
   updateLotterySettingApplyStatus,
+  saveLotteryResults,
 } = instagramSlice.actions;
 
 export default instagramSlice.reducer;

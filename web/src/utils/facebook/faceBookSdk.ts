@@ -154,7 +154,6 @@ export class FacebookSDK {
             'caption,comments{timestamp,user,id,text,like_count,parent_id,from},timestamp,shortcode',
         },
         (response: IInstagramPost) => {
-          console.log('window.FB.api / Post', response);
           resolve(response);
         },
       );

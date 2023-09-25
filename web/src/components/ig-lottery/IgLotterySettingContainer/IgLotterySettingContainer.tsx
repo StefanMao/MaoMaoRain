@@ -33,6 +33,7 @@ import {
   updateLotterySettingFormErrorStatus,
   initCurrentLotterySetting,
   updateLotterySettingApplyStatus,
+  saveLotteryResults,
 } from '../../../store/InstagramStore/instagramSlice';
 
 interface IgLotterySettingContainerStates {
@@ -76,8 +77,8 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
   const handleLotteryDrawBtnClick = (): void => {
     console.log('currentLotterySetting', currentLotterySetting);
     console.log('currentQualifiedComments', currentQualifiedComments);
-    const data = performLottery(currentLotterySetting, currentQualifiedComments);
-    console.log('data', data);
+    const lotteryResults = performLottery(currentLotterySetting, currentQualifiedComments);
+    dispatch(saveLotteryResults(lotteryResults))
   };
 
   const performLottery = (
@@ -88,13 +89,14 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
     const lotteryResults: ILotteryResult[] = [];
     const copyQualifiedComments = [...qualifiedComments];
     const lotteryTime = moment().format('YYYY-MM-DD hh:mm:ss');
+    const allWinners:IInstagramComment[] = [];
 
     prizes.forEach((prize) => {
       const { name, quota } = prize;
 
       if (!quota || !name) return [];
 
-      const winners = [];
+      const eachPrizeWinners = [];
 
       // 如果超過100% 則以100%計算
       const prizeProbability = Math.min((quota / qualifiedComments.length) * 100, 100);
@@ -106,12 +108,13 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
         // 避免 獎項名額 數量大於 留言數量
         const randomIndex = Math.floor(Math.random() * copyQualifiedComments.length);
         const winner = copyQualifiedComments.splice(randomIndex, 1);
-        winners.push(winner[0]);
+        eachPrizeWinners.push(winner[0]);
+        allWinners.push(winner[0]);
       }
 
       lotteryResults.push({
         prizeName: name,
-        winners,
+        eachPrizeWinners,
         probability: prizeProbability.toFixed(2) + '%',
       });
     });
@@ -120,6 +123,7 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
       lotteryTime,
       activitySettings,
       lotteryResults,
+      allWinners,
     };
   };
 
