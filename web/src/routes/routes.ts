@@ -6,7 +6,7 @@ export const PageRoutes = [
     type: 'page',
   },
   {
-    displayName: '抽獎小工具',
+    displayName: 'Ig留言功能',
     name: 'Ig Lottery Tool',
     path: '/ig-lottery',
     type: 'page',

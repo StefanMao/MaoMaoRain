@@ -1,5 +1,6 @@
 import React, { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logoT from '../../../static/images/logo_transparent.png';
 
 import {
   AppBar,
@@ -75,11 +76,16 @@ const NavBar: React.FC = () => {
   const [state, actions] = useHook();
 
   return (
-    <AppBar position='static'>
+    <AppBar position='static' sx={{ backgroundColor: '#519F9F' }}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           {/* 大螢幕設定，在900px以下消失，900px以上出現 */}
-          <DeviceHubIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <img
+            src={logoT}
+            alt='Transparent Image'
+            width={120}
+            height={120}
+          />
           <Typography
             variant='h6'
             noWrap
