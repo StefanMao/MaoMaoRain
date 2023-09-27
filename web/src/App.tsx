@@ -13,8 +13,8 @@ import { containerStyle, appStyle } from './AppStyle';
 // 專案內部頁面和組件 相關 import
 import HomePage from './pages/home-page/HomePage';
 import IgLotteryPage from './pages/ig-lottery-page/IgLotteryPage';
-import NavBar from './components/app/nav-bar/NavBar';
-import Footer from './components/app/footer/Footer';
+import NavBar from './components/layout/nav-bar/NavBar';
+import Footer from './components/layout/footer/Footer';
 
 const App: React.FC = () => {
   useEffect(() => {
