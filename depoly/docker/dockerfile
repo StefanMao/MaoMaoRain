@@ -1,0 +1,19 @@
+FROM node:18.17.0
+
+WORKDIR /app
+
+COPY web/package*.json ./web/
+
+WORKDIR /app/web
+
+RUN yarn install
+
+WORKDIR /app
+
+COPY web/ ./
+
+RUN yarn build
+
+EXPOSE 3000
+
+CMD [ "yarn", "start" ]
