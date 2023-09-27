@@ -5,13 +5,17 @@ WORKDIR /app
 COPY web/package*.json ./web/
 RUN pwd
 WORKDIR /app/web
+RUN ls
+# 移除現有node_modules 目錄
+RUN rm -rf ./web/node_modules
 
 RUN yarn install
 
 WORKDIR /app
-
+RUN ls
 COPY web/ ./
 RUN pwd
+RUN ls
 RUN yarn build
 
 EXPOSE 3000
