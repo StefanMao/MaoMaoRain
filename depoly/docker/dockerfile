@@ -3,7 +3,7 @@ FROM node:18.17.0
 WORKDIR /app
 
 COPY web/package*.json ./web/
-
+RUN pwd
 WORKDIR /app/web
 
 RUN yarn install
@@ -11,7 +11,7 @@ RUN yarn install
 WORKDIR /app
 
 COPY web/ ./
-
+RUN pwd
 RUN yarn build
 
 EXPOSE 3000
