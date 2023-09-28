@@ -1,26 +1,15 @@
-FROM node:18.17.0
-
+# build stage
+FROM node:18.17.0 AS build
 WORKDIR /app
-
 COPY web/package*.json ./web/
-
-WORKDIR /app/web
-
-# 移除現有node_modules 目錄
-RUN rm -rf ./web/node_modules
-
-RUN yarn install
-
-WORKDIR /app
-
+RUN rm -rf ./web/node_modules && yarn install
 COPY web/ ./
-
 RUN yarn build
 
-EXPOSE 3000
-
-CMD [ "yarn", "start" ]
-
-# RUN yarn global add serve
-
-# CMD ["serve", "-s", "build", "-l", "3000"]
+# depoly stage
+FROM node:18.17.0
+WORKDIR /app
+COPY --from=build /app/web/build/ ./build/
+RUN yarn global add serve
+EXPOSE 8080
+CMD ["serve", "-p", "8080", "build/"]
