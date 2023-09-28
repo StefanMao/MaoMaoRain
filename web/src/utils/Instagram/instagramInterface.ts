@@ -55,11 +55,17 @@ export interface IPrize {
   quota?: number;
 }
 
+export interface IExtraConditions {
+  requiredTagCount: number;
+  requiredTextContent: string;
+}
+
 // 完整的抽獎活動設定
 export interface ILotteryActivitySettings {
   activityName: string;
   activeTime: ILotteryActivityTime;
   prizes: IPrize[];
+  extraConditions: IExtraConditions;
 }
 
 export interface ILotteryResult {

@@ -50,7 +50,7 @@ interface IgPostCommentTabsStates {
 interface IgPostCommentTabsActions {
   handleTabChange: (event: React.SyntheticEvent, newValue: number) => void;
   getNumberOfComments: (tabKey: string) => number;
-  shouldShowTab: (activityName: string | undefined, tabKey: string) => boolean;
+  shouldShowTab: (tabKey: string) => boolean;
 }
 
 export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] => {
@@ -62,31 +62,12 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
     currentQualifiedComments,
     currentNonQualifiedComments,
     islotterySettingFormError,
+    isActivitySettingApplied,
   }: IInstagramStore = useSelector(instagramData);
   const [selectedTab, setSelectedTab] = useState<number>(0);
 
-  const shouldShowTab = (activityName: string | undefined, tabKey: string) => {
-    return ((tabKey === 'allComments') || (!islotterySettingFormError && activityName !== ''));
-  };
-
-  /**
-   * Filter comments based on active time defined in lottery settings.
-   *
-   * @param {Object} filterParams - Filter parameters containing lotterySetting and commentData.
-   * @returns {Array} - An array of comments within the active time.
-   */
-  const filterActiveTime = (filterParams: FilterParams) => {
-    const { lotterySetting, commentData } = filterParams;
-
-    const isCommentWithinActiveTime = (comment: IInstagramComment) => {
-      const commentTimestamp = moment(comment.timestamp);
-      const { startDate, endDate } = lotterySetting.activeTime;
-      return commentTimestamp.isBetween(startDate, endDate, null, '[]');
-    };
-
-    const filteredComments = commentData.filter(isCommentWithinActiveTime);
-
-    return filteredComments;
+  const shouldShowTab = (tabKey: string) => {
+    return tabKey === 'allComments' || isActivitySettingApplied;
   };
 
   /**
@@ -105,16 +86,58 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
     dispatch(saveCurrentNonQualifiedComments(filteredOutComments));
   };
 
+  /**
+   * Filter comments based on rules defined in lottery settings.
+   *
+   * @param {Array} comments - An array of comments to filter.
+   * @param {Object} lotterySetting - The lottery settings containing filtering rules.
+   * @returns {Array} - An array of comments that meet the filtering rules.
+   */
+  const filterCommentsByRules = (
+    comments: IInstagramComment[],
+    lotterySetting: ILotteryActivitySettings,
+  ) => {
+    const {
+      extraConditions: { requiredTagCount, requiredTextContent },
+      activeTime,
+    } = lotterySetting;
+
+    const isCommentWithinActiveTime = (comment: IInstagramComment) => {
+      const commentTimestamp = moment(comment.timestamp);
+      const { startDate, endDate } = activeTime;
+      return commentTimestamp.isBetween(startDate, endDate, null, '[]');
+    };
+
+    const isTagRequirementMet = (comment: IInstagramComment) => {
+      if (!isNaN(requiredTagCount) && requiredTagCount > 0) {
+        const tagCount = (comment.text.match(/@/g) || []).length;
+        return tagCount >= requiredTagCount;
+      }
+      return true;
+    };
+
+    const isCommentRequirementMet = (comment: IInstagramComment) => {
+      if (comment.text.trim() !== '') {
+       return comment.text.includes(requiredTextContent)
+      }
+    };
+
+    const filteredComments = comments.filter((comment) => {
+      return (
+        isCommentWithinActiveTime(comment) &&
+        isTagRequirementMet(comment) &&
+        isCommentRequirementMet(comment)
+      );
+    });
+
+    return filteredComments;
+  };
+
   const getQualifiedComments = (filterParams: FilterParams): void => {
-    const { selectedPost, lotterySetting, commentData } = filterParams;
+    const { lotterySetting, commentData } = filterParams;
     let resultComments = [...commentData];
 
-    // 過濾抽獎活動截止日期
-    resultComments = filterActiveTime({
-      selectedPost,
-      lotterySetting,
-      commentData: resultComments,
-    });
+    resultComments = filterCommentsByRules(resultComments, lotterySetting);
 
     dispatch(saveCurrentQualifiedComments(resultComments));
 
@@ -140,7 +163,11 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
   };
 
   React.useEffect(() => {
-    if (selectedPost && currentLotterySetting) {
+    if (!isActivitySettingApplied) {
+      setSelectedTab(0);
+    }
+
+    if (isActivitySettingApplied && selectedPost && currentLotterySetting) {
       const filterParams = {
         selectedPost,
         lotterySetting: currentLotterySetting,
@@ -148,7 +175,7 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
       };
       getQualifiedComments(filterParams);
     }
-  }, [selectedPost, currentPostComments]);
+  }, [isActivitySettingApplied]);
 
   const states: IgPostCommentTabsStates = {
     selectedTab,
@@ -173,7 +200,6 @@ const IgPostCommentTabs: React.FC = () => {
     currentPostComments,
     currentQualifiedComments,
     currentNonQualifiedComments,
-    currentLotterySetting,
   } = states;
   const { handleTabChange, getNumberOfComments, shouldShowTab } = actions;
 
@@ -187,7 +213,7 @@ const IgPostCommentTabs: React.FC = () => {
       >
         {tabsMenu.map(
           (tab) =>
-            shouldShowTab(currentLotterySetting.activityName, tab.key) && (
+            shouldShowTab(tab.key) && (
               <Tab
                 key={tab.key}
                 label={

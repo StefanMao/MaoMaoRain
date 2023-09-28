@@ -22,6 +22,10 @@ const lotterySettingDefault = {
       quota: 0,
     },
   ],
+  extraConditions: {
+    requiredTagCount: 0,
+    requiredTextContent: '',
+  },
 };
 
 const initialState: IInstagramStore = {

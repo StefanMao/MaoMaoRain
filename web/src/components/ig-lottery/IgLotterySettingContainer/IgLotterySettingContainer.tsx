@@ -75,10 +75,8 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
   } = useForm({ mode: 'onChange' });
 
   const handleLotteryDrawBtnClick = (): void => {
-    console.log('currentLotterySetting', currentLotterySetting);
-    console.log('currentQualifiedComments', currentQualifiedComments);
     const lotteryResults = performLottery(currentLotterySetting, currentQualifiedComments);
-    dispatch(saveLotteryResults(lotteryResults))
+    dispatch(saveLotteryResults(lotteryResults));
   };
 
   const performLottery = (
@@ -89,7 +87,7 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
     const lotteryResults: ILotteryResult[] = [];
     const copyQualifiedComments = [...qualifiedComments];
     const lotteryTime = moment().format('YYYY-MM-DD hh:mm:ss');
-    const allWinners:IInstagramComment[] = [];
+    const allWinners: IInstagramComment[] = [];
 
     prizes.forEach((prize) => {
       const { name, quota } = prize;
@@ -102,8 +100,7 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
       const prizeProbability = Math.min((quota / qualifiedComments.length) * 100, 100);
 
       for (let i = 0; i < quota; i++) {
-        
-        if(copyQualifiedComments.length === 0) continue;
+        if (copyQualifiedComments.length === 0) continue;
 
         // 避免 獎項名額 數量大於 留言數量
         const randomIndex = Math.floor(Math.random() * copyQualifiedComments.length);
@@ -149,6 +146,7 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
   const setFormDefaultValues = (): void => {
     dispatch(initCurrentLotterySetting());
     dispatch(updateLotterySettingApplyStatus(false));
+    dispatch(saveLotteryResults(null));
   };
 
   /**
@@ -185,6 +183,8 @@ export const useHook = (): [IgLotterySettingContainerStates, IgLotterySettingCon
     // 套用設定後，使用者修改欄位，需要重新套用設定
     if (isDirty && isActivitySettingApplied) {
       dispatch(updateLotterySettingApplyStatus(false));
+      // 中獎名單清空
+      dispatch(saveLotteryResults(null));
     }
   }, [isDirty]);
 
@@ -220,7 +220,7 @@ const IgLotterySettingContainer: React.FC = () => {
 
   return (
     <Paper elevation={2} sx={{ padding: '12px' }}>
-      <form onSubmit={() => {}}>
+      <form>
         <Grid container justifyContent='space-between'>
           <Typography variant='h5' align='left'>
             抽獎活動名稱
@@ -312,7 +312,7 @@ const IgLotterySettingContainer: React.FC = () => {
           </Grid>
         </FormControl>
         <FormControl fullWidth sx={{ flexDirection: 'row', marginTop: '8px' }}>
-          <Grid container alignItems='center' mt={1} direction='row' spacing={2}>
+          <Grid container alignItems='center' direction='row' spacing={2}>
             <Grid item container alignItems='center' direction='row' xs={8}>
               <Typography mr={1} variant='subtitle2' align='left'>
                 獎項 1:
@@ -353,17 +353,96 @@ const IgLotterySettingContainer: React.FC = () => {
                   <TextField
                     InputProps={{
                       endAdornment: <InputAdornment position='end'>位</InputAdornment>,
-                      inputProps: { min: 1 },
+                      inputProps: { min: 1, style: { textAlign: 'center' } },
                     }}
                     {...field}
                     type='number'
                     sx={{ height: '60px', flex: 1 }}
-                    label='請輸入名額'
                     variant='outlined'
                     margin='normal'
                     value={field.value || ''}
                     error={!!errors.prizes?.[0]?.quota}
                     helperText={errors.prizes?.[0]?.quota ? errors.prizes[0].quota.message : ''}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </FormControl>
+        <FormControl fullWidth sx={{ marginTop: '12px' }}>
+          <Typography mr={1} variant='h5' align='left'>
+            額外限制
+          </Typography>
+          <Grid container alignItems='center'>
+            <Grid
+              item
+              container
+              direction='row'
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'none', sm: 'center' },
+              }}
+            >
+              <Typography mr={1} mt={1} variant='subtitle1' align='left'>
+                #1 Tag好友限制: 每則留言內容至少需要 Tag
+              </Typography>
+              <Controller
+                name={`extraConditions.requiredTagCount`}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    InputProps={{
+                      endAdornment: <InputAdornment position='end'>位好友</InputAdornment>,
+                      inputProps: { min: 0, style: { textAlign: 'center' } },
+                    }}
+                    {...field}
+                    type='number'
+                    sx={{ height: '60px', flex: 1 }}
+                    variant='outlined'
+                    margin='normal'
+                    value={field.value || ''}
+                    error={!!errors.extraConditions?.requiredTagCount}
+                    helperText={
+                      errors.extraConditions?.requiredTagCount
+                        ? errors.extraConditions?.requiredTagCount.message
+                        : ''
+                    }
+                  />
+                )}
+              />
+            </Grid>
+            <Grid
+              item
+              container
+              direction='row'
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'none', sm: 'center' },
+              }}
+            >
+              <Typography mr={1} variant='subtitle1' align='left'>
+                #2 留言內容限制: 留言內容須包含 文字
+              </Typography>
+              <Controller
+                name={`extraConditions.requiredTextContent`}
+                control={control}
+                rules={{
+                  maxLength: { value: 50, message: '限定字串不能超過 50 字!' },
+                }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    sx={{ height: '60px', flex: 1 }}
+                    label='留言內容須包含字串'
+                    variant='outlined'
+                    margin='normal'
+                    value={field.value || ''}
+                    error={!!errors.extraConditions?.requiredTextContent}
+                    helperText={
+                      errors.extraConditions?.requiredTextContent
+                        ? errors.extraConditions?.requiredTextContent.message
+                        : ''
+                    }
                   />
                 )}
               />
@@ -402,25 +481,6 @@ const IgLotterySettingContainer: React.FC = () => {
         autoHideDuration={3000}
         onClose={handleSnackbarOnClose}
       />
-      {/* <FormControl fullWidth sx={{ marginTop: '12px' }}>
-        <Typography variant='h5' align='left'>
-          其他條件設定
-        </Typography>
-        <Grid
-          container
-          alignItems='center'
-          mt={1}
-          sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
-        >
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox color='primary' />}
-              label='可重複中獎'
-              sx={{ alignItems: 'center' }}
-            />
-          </FormGroup>
-        </Grid>
-      </FormControl> */}
     </Paper>
   );
 };
