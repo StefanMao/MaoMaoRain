@@ -1,12 +1,28 @@
 FROM node:18.17.0 as build-deps
 
-WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
-RUN yarn
-COPY . ./
+WORKDIR /app
+
+COPY web/package*.json yarn.lock ./web/
+
+WORKDIR /app/web
+
+# 移除現有node_modules 目錄
+RUN rm -rf ./web/node_modules
+
+RUN yarn install
+
+WORKDIR /app
+
+COPY web/ ./
+
 RUN yarn build
 
+# EXPOSE 3000
+
+# CMD [ "yarn", "start" ]
+
 FROM nginx:1.12-alpine
-COPY --from=build-deps /usr/src/app/build /usr/share/nginx/html
+COPY --from=build-deps /app/web/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
