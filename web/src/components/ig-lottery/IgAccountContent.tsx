@@ -52,9 +52,6 @@ export const useHook = (props: IgAccountContentProps): [IgAccountContentStates, 
   }, [accounts]);
 
   React.useEffect(() => {
-    // console.log('selectedIgAccount', selectedIgAccount);
-    // console.log('isSelectDisabled', isSelectDisabled);
-    // console.log('accounts', accounts)
   }, [selectedIgAccount, isSelectDisabled, accounts]);
 
   const actions: IgAccountContentActions = { handleFanPageChange, initSelectAccountDefault };

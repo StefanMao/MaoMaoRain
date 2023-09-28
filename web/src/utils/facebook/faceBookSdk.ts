@@ -99,7 +99,7 @@ export class FacebookSDK {
           console.log('Login response', response);
           resolve(response);
         },
-        { scope: 'public_profile,email,pages_show_list,instagram_basic,business_management' },
+        { scope: 'pages_show_list,instagram_basic,business_management' },
       );
     });
   }
