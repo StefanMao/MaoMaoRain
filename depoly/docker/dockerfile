@@ -1,15 +1,12 @@
-# build stage
-FROM node:18.17.0 AS build
-WORKDIR /app
-COPY web/package*.json ./web/
-RUN rm -rf ./web/node_modules && yarn install
-COPY web/ ./
+FROM node:18.17.0 as build-deps
+
+WORKDIR /usr/src/app
+COPY package.json yarn.lock ./
+RUN yarn
+COPY . ./
 RUN yarn build
 
-# depoly stage
-FROM node:18.17.0
-WORKDIR /app
-COPY --from=build /app/web/build/ ./build/
-RUN yarn global add serve
-EXPOSE 8080
-CMD ["serve", "-p", "8080", "build/"]
+FROM nginx:1.12-alpine
+COPY --from=build-deps /usr/src/app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
