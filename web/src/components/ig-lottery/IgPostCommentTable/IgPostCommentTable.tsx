@@ -24,7 +24,6 @@ import {
 import { FacebookSDK } from '../../../utils/facebook/faceBookSdk';
 import { saveCurrentPostComments } from '../../../store/InstagramStore/instagramSlice';
 import { formatTimestampWithTime } from '../../../utils/moment/moment';
-import { fakeCommentData } from '../../../utils/const/fakeData';
 
 import { tableStyle } from './IgPostCommentTableStyle';
 
@@ -121,7 +120,6 @@ export const useHook = (
         dispatch(saveCurrentPostComments([]));
         return;
       }
-      response.comments.data = fakeCommentData();
       dispatch(saveCurrentPostComments(response.comments.data));
     } catch (error) {
       console.error('An error occurred while fetching comments:', error);
