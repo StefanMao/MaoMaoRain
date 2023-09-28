@@ -19,6 +19,8 @@ RUN yarn build
 
 EXPOSE 3000
 
-RUN yarn global add serve
+CMD [ "yarn", "start" ]
 
-CMD ["serve", "-s", "build", "-l", "3000"]
+# RUN yarn global add serve
+
+# CMD ["serve", "-s", "build", "-l", "3000"]
