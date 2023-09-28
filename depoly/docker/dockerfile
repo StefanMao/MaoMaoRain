@@ -2,7 +2,7 @@ FROM node:18.17.0 as build-deps
 
 WORKDIR /app
 
-COPY web/package*.json yarn.lock ./web/
+COPY web/package*.json ./web/
 
 WORKDIR /app/web
 
