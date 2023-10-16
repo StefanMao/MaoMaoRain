@@ -97,7 +97,7 @@ export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
           };
           dispatch(saveUserData(userData));
         }
-        console.log('Facebook Login Refresh Status:', response);
+        // console.log('Facebook Login Refresh Status:', response);
       } catch (error) {
         console.error('Facebook Login Refresh Error:', error);
       }

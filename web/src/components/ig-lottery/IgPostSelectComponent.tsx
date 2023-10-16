@@ -79,7 +79,6 @@ export const useHook = (): [IgPostSelectComponentStates, IgPostSelectComponentAc
   }, [postDatas]);
 
   React.useEffect(() => {
-    console.log('selectedBusinessAccount Change', selectedBusinessAccount);
     getIgPosts();
   }, [selectedBusinessAccount]);
 

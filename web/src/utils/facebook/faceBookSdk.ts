@@ -21,7 +21,6 @@ export class FacebookSDK {
       // script onload event
       script.onload = async () => {
         console.log('SDK script loaded');
-        // after script load, start init sdk
         await this.initializeSDK();
         resolve();
       };

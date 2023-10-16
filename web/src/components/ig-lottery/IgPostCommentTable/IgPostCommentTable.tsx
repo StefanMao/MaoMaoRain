@@ -107,21 +107,20 @@ export const useHook = (
 
   const getComments = async (): Promise<void> => {
     try {
-      if (!selectedPost) {
-        // console.error('No selected post to fetch comments for.');
-        return;
-      }
+
+      if (!selectedPost) return;
 
       const fbSdkInstance = await FacebookSDK.getInstance();
       setIsLoading(true);
       const response: IInstagramPost = await fbSdkInstance.getPostComments(selectedPost.id);
       console.log('getComments', response);
+
       if (!response?.comments?.data) {
-        console.error('Failed to fetch comments.');
+        console.error('The selectedPost do not have any comments.');
         dispatch(saveCurrentPostComments([]));
         return;
       }
-      // response.comments.data = fakeCommentData();
+
       dispatch(saveCurrentPostComments(response.comments.data));
     } catch (error) {
       console.error('An error occurred while fetching comments:', error);
