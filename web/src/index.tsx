@@ -15,9 +15,6 @@ declare global {
     FB?: any;
   }
 }
-console.log(process.env.REACT_APP_FB_APP_VERSION);
-console.log(process.env.REACT_APP_DOMAIN);
-console.log(process.env.REACT_APP_IG_LOTTERY_REDIRECT_URI);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
