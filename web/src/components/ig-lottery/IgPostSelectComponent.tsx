@@ -11,6 +11,7 @@ import {
   Divider,
   IconButton,
   Grid,
+  Tooltip,
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -111,14 +112,16 @@ const IgPostSelectComponent: React.FC = () => {
             {postDatas.map((post) => (
               <MenuItem key={post.id} value={post as any}>
                 <Chip variant='filled' color='info' size='small' label='發佈時間' />
-                <Typography ml={2} style={menuItemContentStyle}>
+                <Typography ml={1} style={menuItemContentStyle}>
                   {formatTimestamp(post.timestamp)}
                 </Typography>
                 <Divider style={menuItemDividerStyle} orientation='vertical' flexItem />
                 <IconButton color='primary' onClick={openIgPostUrl}>
                   <OpenInNewIcon />
                 </IconButton>
-                <Typography style={menuItemPostContentStyle}>{post.caption}</Typography>
+                <Tooltip title={post.caption.length > 200 ? `${post.caption.substring(0, 200)}...` : post.caption} placement="top" arrow>
+                  <Typography style={menuItemPostContentStyle}>{post.caption}</Typography>
+                </Tooltip>
               </MenuItem>
             ))}
           </Select>
