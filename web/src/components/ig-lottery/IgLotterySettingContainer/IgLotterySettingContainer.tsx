@@ -13,7 +13,7 @@ import {
   CardActions,
   Button,
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker, DateTimePicker } from '@mui/x-date-pickers';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SaveIcon from '@mui/icons-material/Save';
 
@@ -299,12 +299,12 @@ const IgLotterySettingContainer: React.FC = () => {
                   required: '活動截止日期不能為空!',
                 }}
                 render={({ field }) => (
-                  <DatePicker
+                  <DateTimePicker
                     {...field}
                     sx={{ height: '60px', width: '100%' }}
                     value={moment(field.value) || moment()}
                     minDate={moment(getValues('activeTime.startDate'))}
-                    format='YYYY-MM-DD'
+                    format='YYYY-MM-DD HH:mm:ss'
                   />
                 )}
               />

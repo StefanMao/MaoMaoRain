@@ -120,7 +120,6 @@ export const useHook = (
         dispatch(saveCurrentPostComments([]));
         return;
       }
-
       dispatch(saveCurrentPostComments(response.comments.data));
     } catch (error) {
       console.error('An error occurred while fetching comments:', error);
