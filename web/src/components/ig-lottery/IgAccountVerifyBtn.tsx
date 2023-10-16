@@ -11,15 +11,16 @@ interface IgAccountVerifyBtnActions {
 
 export const useHook = (): [IgAccountVerifyBtnActions] => {
   const handleBtnClick = (): void => {
+    const domain = process.env.REACT_APP_DOMAIN;
     const clientId = process.env.REACT_APP_FB_APP_ID;
     const version = process.env.REACT_APP_FB_APP_VERSION;
-    const redirectUri = process.env.REACT_APP_DEV_IG_LOTTERY_REDIRECT_URI;
+    const redirectUri = process.env.REACT_APP_IG_LOTTERY_REDIRECT_URI;
     const permissionScope = [
       ...permissionIgVerifyScope.instagram,
       ...permissionIgVerifyScope.pages,
     ].join(',');
 
-    const url = `https://www.facebook.com/${version}/dialog/oauth?client_id=${clientId}&display=page&domain=${process.env.REACT_APP_DEV_DOMAIN}&redirect_uri=${redirectUri}&response_type=token&scope=${permissionScope}`;
+    const url = `https://www.facebook.com/${version}/dialog/oauth?client_id=${clientId}&display=page&domain=${domain}&redirect_uri=${redirectUri}&response_type=token&scope=${permissionScope}`;
     window.location.href = url;
   };
 
