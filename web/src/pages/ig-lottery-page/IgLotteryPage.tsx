@@ -38,7 +38,10 @@ import {
   MeApiResponse,
   FacebookLoginStatus,
 } from '../../utils/facebook/faceBookSdkTypes';
-import { IPerformLotteryResult } from '../../utils/Instagram/instagramInterface';
+import {
+  IPerformLotteryResult,
+  ILotteryActivitySettings,
+} from '../../utils/Instagram/instagramInterface';
 import { selectUserData } from '../../store/faceBookLogin/selectors';
 import { FacebookSDK } from '../../utils/facebook/faceBookSdk';
 
@@ -60,12 +63,13 @@ interface IgLotteryPageStates {
   isFacebookUserDataEmpty: boolean;
   isSelectedPostDateEmpty: boolean;
   performLotteryResult: IPerformLotteryResult | null;
+  currentLotterySetting: ILotteryActivitySettings;
 }
 
 export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
   const dispatch = useDispatch();
   const userFbLoggInData: UserDataState = useSelector(selectUserData);
-  const { selectedPost, performLotteryResult } = useSelector(instagramData);
+  const { selectedPost, performLotteryResult, currentLotterySetting } = useSelector(instagramData);
   const isUserIgAccountsDataEmpty: boolean =
     !userFbLoggInData?.accounts || userFbLoggInData?.accounts.data.length === 0;
 
@@ -126,6 +130,7 @@ export const useHook = (): [IgLotteryPageStates, IgLotteryPageActions] => {
     isFacebookUserDataEmpty,
     isSelectedPostDateEmpty,
     performLotteryResult,
+    currentLotterySetting,
   };
   const actions: IgLotteryPageActions = {
     saveLoggedInDataToStore,
@@ -145,6 +150,7 @@ const IgLotteryPage: React.FC = () => {
     isUserIgAccountsDataEmpty,
     isSelectedPostDateEmpty,
     performLotteryResult,
+    currentLotterySetting,
   } = states;
   const { facebookLogoutBtnClick, renderFacebookStatusIcon } = actions;
 
@@ -252,6 +258,9 @@ const IgLotteryPage: React.FC = () => {
               中獎名單
             </Typography>
           </Stack>
+          <Typography variant='h6' sx={{ textAlign: 'left' }}>
+            {`抽獎活動名稱: ${currentLotterySetting.activityName}`}
+          </Typography>
           <Stack spacing={2} direction='row' justifyContent='start' alignItems='center' mb={1}>
             <Typography
               variant='subtitle2'
