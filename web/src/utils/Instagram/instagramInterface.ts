@@ -58,6 +58,7 @@ export interface IPrize {
 export interface IExtraConditions {
   requiredTagCount: number;
   requiredTextContent: string;
+  allowRepeatWinning: boolean;
 }
 
 // 完整的抽獎活動設定

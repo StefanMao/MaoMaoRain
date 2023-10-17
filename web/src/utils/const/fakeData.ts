@@ -2,7 +2,7 @@ import { IInstagramComment } from '../Instagram/instagramInterface';
 
 export const fakeCommentData = (): IInstagramComment[] => {
   const fakeComments = [];
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 1; i++) {
     const comment = {
       id: `comment-${i + 1}`,
       text: `這是第 ${i + 1} 條留言的內容。`,
@@ -16,7 +16,7 @@ export const fakeCommentData = (): IInstagramComment[] => {
     };
     fakeComments.push(comment);
   }
-  for (let i = 101; i < 200; i++) {
+  for (let i = 2; i < 3; i++) {
     const comment = {
       id: `comment-${i + 1}`,
       text: `這是第 ${i + 1} 條留言的內容。 @1234`,
@@ -30,7 +30,7 @@ export const fakeCommentData = (): IInstagramComment[] => {
     };
     fakeComments.push(comment);
   }
-  for (let i = 200; i < 205; i++) {
+  for (let i = 4; i < 5; i++) {
     const comment = {
       id: `comment-${i + 1}`,
       text: `這是第 ${i + 1} 條留言的內容。 @1234 @2friend 5555`,
@@ -38,8 +38,8 @@ export const fakeCommentData = (): IInstagramComment[] => {
       timestamp: `2023-10-16 18:01`,
       like_count: 0,
       from: {
-        id: '11111',
-        username: '2222',
+        id: 'test',
+        username: '333',
       },
     };
     fakeComments.push(comment);

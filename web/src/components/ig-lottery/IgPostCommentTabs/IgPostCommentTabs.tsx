@@ -86,6 +86,33 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
     dispatch(saveCurrentNonQualifiedComments(filteredOutComments));
   };
 
+  const filterRepeatComments = (comments: IInstagramComment[], allowRepeatWinning: boolean) => {
+    if (allowRepeatWinning) {
+      // 如果允許重複中獎，直接回傳原始留言
+      return comments;
+    }
+
+    const uniqueUsernames = new Set();
+    const filteredComments = [];
+
+    for (let i = comments.length - 1; i >= 0; i--) {
+      const comment = comments[i];
+      const username = comment.from.username;
+
+      if (!uniqueUsernames.has(username)) {
+        // 如果這個使用者還沒出現過，保留這筆留言
+        uniqueUsernames.add(username);
+        filteredComments.push(comment);
+      }
+    }
+
+    // 直接修改原始留言資料
+    comments.length = 0;
+    Array.prototype.push.apply(comments, filteredComments.reverse());
+
+    return comments; // 返回修改後的原始留言資料
+  };
+
   /**
    * Filter comments based on rules defined in lottery settings.
    *
@@ -98,7 +125,7 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
     lotterySetting: ILotteryActivitySettings,
   ) => {
     const {
-      extraConditions: { requiredTagCount, requiredTextContent },
+      extraConditions: { requiredTagCount, requiredTextContent, allowRepeatWinning },
       activeTime,
     } = lotterySetting;
 
@@ -118,10 +145,14 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
 
     const isCommentRequirementMet = (comment: IInstagramComment) => {
       if (comment.text.trim() !== '') {
-       return comment.text.includes(requiredTextContent)
+        return comment.text.includes(requiredTextContent);
       }
     };
 
+    // 直接修改 comments 
+    filterRepeatComments(comments, allowRepeatWinning);
+
+    console.log('comments', comments);
     const filteredComments = comments.filter((comment) => {
       return (
         isCommentWithinActiveTime(comment) &&
@@ -136,6 +167,8 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
   const getQualifiedComments = (filterParams: FilterParams): void => {
     const { lotterySetting, commentData } = filterParams;
     let resultComments = [...commentData];
+
+    console.log('lotterySetting', lotterySetting);
 
     resultComments = filterCommentsByRules(resultComments, lotterySetting);
 

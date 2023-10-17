@@ -25,6 +25,7 @@ const lotterySettingDefault = {
   extraConditions: {
     requiredTagCount: 0,
     requiredTextContent: '',
+    allowRepeatWinning: false,
   },
 };
 

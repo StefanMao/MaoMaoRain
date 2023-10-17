@@ -12,6 +12,7 @@ import {
   InputAdornment,
   CardActions,
   Button,
+  Checkbox,
 } from '@mui/material';
 import { DatePicker, DateTimePicker } from '@mui/x-date-pickers';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -373,6 +374,29 @@ const IgLotterySettingContainer: React.FC = () => {
           <Typography mr={1} variant='h5' align='left'>
             額外限制
           </Typography>
+          <Grid
+            item
+            container
+            direction='row'
+            alignItems='center'
+            sx={{
+              flexDirection: { xs: 'column', sm: 'row' },
+            }}
+          >
+            <Typography mr={1} variant='subtitle1' align='left'>
+              #1 可以重複中獎
+            </Typography>
+            <Controller
+              name={`extraConditions.allowRepeatWinning`}
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  {...field}
+                  defaultChecked={false}
+                />
+              )}
+            />
+          </Grid>
           <Grid container alignItems='center'>
             <Grid
               item
@@ -384,7 +408,7 @@ const IgLotterySettingContainer: React.FC = () => {
               }}
             >
               <Typography mr={1} mt={1} variant='subtitle1' align='left'>
-                #1 Tag好友限制: 每則留言內容至少需要 Tag
+                #2 Tag好友限制: 每則留言內容至少需要 Tag
               </Typography>
               <Controller
                 name={`extraConditions.requiredTagCount`}
@@ -421,7 +445,7 @@ const IgLotterySettingContainer: React.FC = () => {
               }}
             >
               <Typography mr={1} variant='subtitle1' align='left'>
-                #2 留言內容限制: 留言內容須包含 文字
+                #3 留言內容限制: 留言內容須包含 文字
               </Typography>
               <Controller
                 name={`extraConditions.requiredTextContent`}
