@@ -1,3 +1,18 @@
+
+export interface PageRoute {
+  displayName: string;
+  name: string;
+  path: string;
+  type: string;
+  children?: SubPageRoute[];
+}
+
+export interface SubPageRoute {
+  path: string;
+  name: string;
+  displayName: string;
+}
+
 export const PageRoutes = [
   {
     displayName: '首頁',
@@ -12,9 +27,17 @@ export const PageRoutes = [
     type: 'page',
   },
   {
-    displayName: '價格',
-    name: 'Price',
-    path: '/',
+    displayName: '作品集',
+    name: 'Collections',
+    path: '/collections',
     type: 'page',
+    children: [
+      {
+        path: 'react-hook-form-demo',
+        name: 'React Hook Form Demo',
+        displayName: 'React Hook Form Demo 範例',
+      },
+    ],
   },
 ];
+
