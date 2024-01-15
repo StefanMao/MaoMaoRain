@@ -149,10 +149,7 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
       }
     };
 
-    // 直接修改 comments 
-    filterRepeatComments(comments, allowRepeatWinning);
-
-    console.log('comments', comments);
+    // console.log('comments', comments);
     const filteredComments = comments.filter((comment) => {
       return (
         isCommentWithinActiveTime(comment) &&
@@ -161,6 +158,7 @@ export const useHook = (): [IgPostCommentTabsStates, IgPostCommentTabsActions] =
       );
     });
 
+    filterRepeatComments(filteredComments, allowRepeatWinning);
     return filteredComments;
   };
 
