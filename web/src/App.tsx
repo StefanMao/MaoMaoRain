@@ -1,6 +1,6 @@
 // React、第三方套件、其他相關 import
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { FacebookSDK } from './utils/facebook/faceBookSdk';
 
 // Material-UI 相關 import
@@ -26,7 +26,7 @@ const App: React.FC = () => {
 
   return (
     <div style={appStyle}>
-      <BrowserRouter>
+      <HashRouter>
         <NavBar />
         <Container style={containerStyle}>
           <Routes>
@@ -35,7 +35,7 @@ const App: React.FC = () => {
           </Routes>
         </Container>
         <Footer />
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 };
