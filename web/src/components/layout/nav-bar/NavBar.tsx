@@ -101,7 +101,7 @@ const NavBar: React.FC = () => {
               textDecoration: 'none',
             }}
           >
-            Social Pluse Hub
+            MaoMaoRain
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
